@@ -4,7 +4,7 @@ Forest fire prediction involves estimating the likelihood of fire ignition or re
 Read the original paper on...
 
 
-### File description
+### Description
 
 #### Database
 The folder contains code for constructing the target and creating the features 3D raster
