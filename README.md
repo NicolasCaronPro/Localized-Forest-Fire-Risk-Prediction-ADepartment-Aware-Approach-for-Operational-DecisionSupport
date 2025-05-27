@@ -12,7 +12,7 @@ The folder contains code for constructing the target and creating the features 3
 #### models
 The folder contains models code used in the article and the high resolution image of models architecture.
 
-### supplementary_materials_
+### supplementary_materials.pdf
 The folder contains additionnals figures, tables and the full list of features used for trained the models.
 
 All code will be cleaned and publish on github.
