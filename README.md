@@ -14,5 +14,3 @@ The folder contains models code used in the article and the high resolution imag
 
 ### supplementary_materials.pdf
 The folder contains additionnals figures, tables and the full list of features used for trained the models.
-
-All code will be cleaned and publish on github.
