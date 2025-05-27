@@ -218,9 +218,9 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
     - start (str): Start date (format 'YYYY-MM-DD')
     - stop (str): End date (format 'YYYY-MM-DD')
     """
-    dir_data_disk = Path('path_to_database') / 'csv' / departement / 'data'
-    dir_data = dir_data_disk 
-    dir_raster =  Path('path_to_database') / 'csv' / departement / 'raster' / resolution
+    dir_data_disk = Path('path_to_database') / 'csv' / departement / 'data' # Path to original data
+    dir_data = dir_data_disk
+    dir_raster =  Path('path_to_database') / 'csv' / departement / 'raster' / resolution # Path to ouput raster
     
     dir_meteostat = dir_data / 'meteostat'
     check_and_create_path(dir_raster)
@@ -279,8 +279,6 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
 
 if __name__ == '__main__':
     RASTER = True
-    depts = gpd.read_file('path_to_database/departements/departements-20180101.shp')
-    depts = depts.to_crs("EPSG:4326")
     parser = argparse.ArgumentParser(
         prog='Train',
         description='Create graph and database according to config.py and tained model',
