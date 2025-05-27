@@ -13,4 +13,4 @@ The folder contains code for constructing the target and creating the features 3
 The folder contains models code used in the article and the high resolution image of models architecture.
 
 ### supplementary_materials.pdf
-The folder contains additionnals figures, tables and the full list of features used for trained the models.
+The folder contains additionnals figures, tables and the full list of features used to train the models.
