@@ -7,10 +7,10 @@ Read the original paper on...
 ### Description
 
 #### Database
-The folder contains code for constructing the target and creating the features 3D raster
+The folder contains code for constructing the target and creating the 3D raster features
 
 #### models
-The folder contains models code used in the article and the high resolution image of models architecture.
+The folder contains the model's code used in the article and the high-resolution image of the model's architecture.
 
 ### supplementary_materials.pdf
-The folder contains additionnals figures, tables and the full list of features used to train the models.
+The folder contains additional figures, tables, and the full list of features used to train the models.
