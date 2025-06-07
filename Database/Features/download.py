@@ -117,6 +117,7 @@ def create_cosia_geojson(path, bounds, dir_output):
 
 def download_elevation(code_dept: int, geo, dir_output: str) -> None:
     """Downloads and processes elevation data for a given department. https://geoservices.ign.fr/courbes-de-niveau"""
+    # TO DO : The exact URL may be different for each department -> Automatisation
     check_and_create_path(dir_output)
     print('DONWLOADING ELEVATION')
     if not (dir_output / f'{dir_output}/COURBE_1-0__SHP_LAMB93_D0{code_dept}_2021-01-01.7z').is_file():
@@ -197,7 +198,7 @@ def download_region(departement, dir_output):
     region.to_file(dir_output / 'geo.geojson')
 
 def download_hexagones(path, geo, dir_output, departement):
-    """Filters a hexagonal grid file to match the specified region and exports it to GeoJSON. Use them from kontur"""
+    """Filters a hexagonal grid file to match the specified region and exports it to GeoJSON. See Kontur"""
     print('CREATE HEXAGONES')
     check_and_create_path(dir_output)
     if 'corse' in departement:
