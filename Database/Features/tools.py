@@ -703,7 +703,7 @@ def raster_elevation(tifFile, dir_output, reslon, reslat, dir_data, dept):
     f = open(dir_output / outputName,"wb")
     pickle.dump(elevation,f)
 
-valeurs_foret_attribut = {
+valeurs_foret_attribut = { # Convert forest type to int
     "Châtaignier": 1,
     "Chênes décidus": 2,
     "Chênes sempervirents": 3,
@@ -727,7 +727,7 @@ valeurs_foret_attribut = {
     "Sapin, épicéa": 21
 }
 
-valeurs_cosia_couverture = { 
+valeurs_cosia_couverture = { # Convert landcover to int
     'Building': 1,
     'Bare soil': 2,
     'Water surface': 3,
@@ -736,11 +736,6 @@ valeurs_cosia_couverture = {
     'Shrubland': 6,
     'Lawn': 7,
     'Crop': 8,
-}
-
-valeurs_tourbiere_couverture = {
-    'Marais': 1,
-    'Haute': 2,
 }
 
 def arrondir_avec_seuil(array, seuil):
