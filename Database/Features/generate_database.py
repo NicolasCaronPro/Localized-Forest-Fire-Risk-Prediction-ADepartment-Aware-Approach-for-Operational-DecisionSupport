@@ -114,10 +114,8 @@ class GenerateDatabase():
             code_dept = f'{code_dept}'
 
         raster_sat_from_france(self.h3tif, self.h3, self.dir_raster, Path('path_to_database') / 'csv' / 'france' / 'data' / 'GEE' / resolution, self.dates) # To download the original sat images, you will need a Google Earth Engine account
-        raster_land(self.h3tif, self.h3tif_high, self.spatialParams['dir_sat'], self.dir_raster, self.dates)
 
         if not (self.spatialParams['dir'] / 'cosia' / 'cosia.geojson').is_file():
-        #if True:
             download_cosia(code_dept, self.region, self.spatialParams['dir'] / 'cosia')
         raster_cosia(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.region)
 
@@ -131,11 +129,9 @@ class GenerateDatabase():
         raster_osmnx(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon, self.resLat, self.spatialParams['dir'], self.departement)
 
         if not (self.spatialParams['dir'] / 'elevation' / 'elevation.csv').is_file():
-        #if True:
             download_elevation(code_dept, self.region, self.spatialParams['dir'] / 'elevation')
         raster_elevation(self.h3tif, self.dir_raster, self.resLon, self.resLat, self.spatialParams['dir'], self.departement)
         
-        #if True:
         if not (self.spatialParams['dir'] / 'BDFORET' / 'foret.geojson').is_file():
             download_foret(code_dept, self.departement, self.spatialParams['dir'])
         raster_foret(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.departement)
@@ -234,9 +230,7 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
     
     spatialParams = {'dir_sat':  dir_data_disk,
                     'dir' : dir_data,
-                    'elevation_file' : 'elevation.tif',
                     'sentBand': ['NDVI', 'NDMI', 'NDBI', 'NDSI', 'NDWI'],
-                    'landCoverBand' : ['0.0','1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0'],
                     'addsent': True,
                     'addland': True}
     
@@ -362,14 +356,7 @@ if __name__ == '__main__':
     
     ################## Correze ######################
     launch('departement-19-correze', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
-    """
-    ################## Corse du sud ######################
-    #launch('departement-100-corse-du-sud', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
-    
-    ################## Haute Corse ######################
-    #launch('departement-101-haute-corse', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
-    
-    """
+
     ################## Cote-d-Or ######################
     launch('departement-21-cote-d-or', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
     
@@ -588,16 +575,16 @@ if __name__ == '__main__':
 
     ################## Essonne ######################
     launch('departement-91-essonne', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
-    """
+    
     ################## Hauts-de-Seine ######################
-    #launch('departement-92-hauts-de-seine', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
+    launch('departement-92-hauts-de-seine', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
 
     ################## Seine-Saint-Denis ######################
-    #launch('departement-93-seine-saint-denis', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
+    launch('departement-93-seine-saint-denis', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
 
     ################## Val-de-Marne ######################
-    #launch('departement-94-val-de-marne', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
+    launch('departement-94-val-de-marne', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
 
     ################## Val-d-Oise ######################
-    #launch('departement-95-val-d-oise', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
-    """
+    launch('departement-95-val-d-oise', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
+    
