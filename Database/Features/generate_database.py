@@ -113,7 +113,7 @@ class GenerateDatabase():
         else:
             code_dept = f'{code_dept}'
 
-        raster_sat_from_france(self.h3tif, self.h3, self.dir_raster, Path('path_to_database') / 'csv' / 'france' / 'data' / 'GEE' / resolution / 'corse', self.dates)
+        raster_sat_from_france(self.h3tif, self.h3, self.dir_raster, Path('path_to_database') / 'csv' / 'france' / 'data' / 'GEE' / resolution, self.dates) # To download the original sat images, you will need a Google Earth Engine account
         raster_land(self.h3tif, self.h3tif_high, self.spatialParams['dir_sat'], self.dir_raster, self.dates)
 
         if not (self.spatialParams['dir'] / 'cosia' / 'cosia.geojson').is_file():
