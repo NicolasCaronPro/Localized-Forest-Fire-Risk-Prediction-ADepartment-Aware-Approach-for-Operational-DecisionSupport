@@ -13,6 +13,7 @@ import glob  # find files by pattern
 import zipfile  # handle zip archives
 from tools import *  # shared utilities across the project
 
+
 def myround(x):
     """Round coordinates to 3 decimal places."""
     # x is a tuple of floats (lon, lat)
