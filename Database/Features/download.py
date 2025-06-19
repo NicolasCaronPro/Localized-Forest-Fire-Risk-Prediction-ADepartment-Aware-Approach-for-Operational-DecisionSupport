@@ -1,9 +1,8 @@
-import requests
+"""Utilities to download and preprocess various geographic datasets."""
+
 from shapely import unary_union, set_precision
 import pandas as pd
 import osmnx as ox
-from sympy import subsets
-import wget
 import subprocess
 from itertools import chain
 import re
@@ -12,7 +11,6 @@ import os
 import py7zr
 import glob
 import zipfile
-import geojson
 from tools import *
 
 def myround(x):
