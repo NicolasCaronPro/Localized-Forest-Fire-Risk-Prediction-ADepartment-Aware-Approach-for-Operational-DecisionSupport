@@ -1,13 +1,8 @@
-from numpy import size
+"""Entry point to build the full feature database for a department."""
+
 from download import *
-import os
 import logging
-import feedparser
-import re
-from bs4 import BeautifulSoup
-import io
 import argparse
-import pytz
 
 ############################### Logger #####################################
 
