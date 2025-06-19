@@ -1,59 +1,32 @@
 import firedanger
-import copy
 import meteostat
 import datetime as dt
 from pathlib import Path
-import random
-
-from sympy import EX, true
-random.seed(0)
 import pandas as pd
 import geopandas as gpd
 import os
-from sklearn.cluster import KMeans
-import skimage as ski
-import matplotlib.pyplot as plt
 import numpy as np
 from geocube.api.core import make_geocube
 from geocube.rasterize import rasterize_points_griddata
-from sklearn.preprocessing import MinMaxScaler
-from shapely.geometry import shape, Point
+from shapely.geometry import Point
 import math
 from osgeo import gdal, ogr
-from scipy.signal import fftconvolve as scipy_fft_conv
 from astropy.convolution import convolve_fft
 import rasterio
 import rasterio.features
 import rasterio.warp
 from skimage import img_as_float
 from skimage import transform
-from sklearn.linear_model import LinearRegression
 import pickle
 import json
 import warnings
-from skimage import morphology
 import cv2
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import MinMaxScaler, normalize
-from shapely.geometry import Polygon
 from shapely.ops import unary_union
-from shapely.geometry import box
-from skimage import morphology
-from skimage.segmentation import watershed
-from scipy.interpolate import interp1d
-from scipy import ndimage as ndi
-from skimage.filters import rank
-from sklearn.mixture import GaussianMixture
-from sklearn.model_selection import GridSearchCV
 from scipy.interpolate import griddata
-import sys
 from dico_departements import *
 import time
-import requests
 from rasterio.warp import reproject, Resampling
 from rasterio.transform import from_origin
-from shapely.geometry import Point
-import rasterio
 from rasterio.mask import mask
 
 ##################################################################################################

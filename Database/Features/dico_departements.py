@@ -1,4 +1,4 @@
-# Liste des départements avec leurs codes
+# Mapping of French department codes to names
 departements = [
     (1, 'Ain'), (2, 'Aisne'), (3, 'Allier'), (4, 'Alpes-de-Haute-Provence'),
     (5, 'Hautes-Alpes'), (6, 'Alpes-Maritimes'), (7, 'Ardeche'), (8, 'Ardennes'),
@@ -184,7 +184,7 @@ dico_foret_url = {
     "departement-101-haute-corse": "https://data.geopf.fr/telechargement/download/BDFORET/BDFORET_2-0__SHP_LAMB93_D02B_2016-02-16/BDFORET_2-0__SHP_LAMB93_D02B_2016-02-16.7z"
 }
 
-# Ajouter ou mettre à jour les départements restants
+# Add default fire season info for departments not listed above
 for dept in departements:
     dept_key = f'departement-{dept}'
     if dept_key not in SAISON_FEUX:
