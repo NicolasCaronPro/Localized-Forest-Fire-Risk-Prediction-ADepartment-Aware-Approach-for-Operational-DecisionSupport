@@ -212,7 +212,7 @@ def download_region(departement, dir_output):
     region.to_file(dir_output / 'geo.geojson')  # save result
 
 def download_hexagones(path, geo, dir_output, departement):
-    """Filters a hexagonal grid file to match the specified region and exports it to GeoJSON. See Kontur"""
+    """Filters a hexagonal grid file to match the specified region and exports it to GeoJSON. See https://www.kontur.io/datasets/population-dataset/"""
     print('CREATE HEXAGONES')  # progress
     check_and_create_path(dir_output)  # ensure folder
     if 'corse' in departement:
