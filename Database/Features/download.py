@@ -243,3 +243,11 @@ def haversine(p1, p2, unit = 'kilometer'):
         return round(meters)  # return in meters
     else:
         return math.inf  # invalid unit
+
+def download_argile(path, code, dir_output):
+    print('DOWNLING ARGILE')
+    check_and_create_path(dir_output)
+    argile_france = gpd.read_file(path / 'AleaRG_Fxx_L93' / 'ExpoArgile_Fxx_L93.shp')
+    argile_dept = argile_france[argile_france['DPT'] == str(code)].reset_index(drop=True)
+    argile_dept = argile_dept.to_crs('EPSG:4326')
+    argile_dept.to_file(dir_output / 'argile.geojson', driver='GeoJSON')
