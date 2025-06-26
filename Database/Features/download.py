@@ -245,6 +245,7 @@ def haversine(p1, p2, unit = 'kilometer'):
         return math.inf  # invalid unit
 
 def download_argile(path, code, dir_output):
+    """ Select from the nationnals Shrink-swell behavior of clays the geometries of the current department See https://www.georisques.gouv.fr/donnees/bases-de-donnees/retrait-gonflement-des-argiles """
     print('DOWNLING ARGILE')
     check_and_create_path(dir_output)
     argile_france = gpd.read_file(path / 'AleaRG_Fxx_L93' / 'ExpoArgile_Fxx_L93.shp')
