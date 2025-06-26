@@ -14,6 +14,9 @@ import zipfile  # handle zip archives
 from tools import *  # shared utilities across the project
 
 
+# The automation of downloading each variable is not yet fully implemented. For some variables, it is necessary to manually download the raw data beforehand. The download links are provided.
+
+
 def myround(x):
     """Round coordinates to 3 decimal places."""
     # x is a tuple of floats (lon, lat)
@@ -136,6 +139,9 @@ def download_elevation(code_dept: int, geo, dir_output: str) -> None:
 
 def download_cosia(code_dept: int, geo, dir_output: str) -> None:
     """Downloads and processes COSIA land cover data for a department if available between 2019-2023. https://cosia.ign.fr/"""
+    ####################################################################################
+    #    This will take time and require high memory consumption                       #
+    ####################################################################################
     check_and_create_path(dir_output)  # ensure directory
     for y in np.arange(2019, 2024):  # iterate over years
         if (dir_output / f'{dir_output}/CoSIA_D0{code_dept}_{y}.zip').is_file():
