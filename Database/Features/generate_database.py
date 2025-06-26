@@ -131,6 +131,11 @@ class GenerateDatabase():
             download_foret(code_dept, self.departement, self.spatialParams['dir'])
         raster_foret(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.departement)
 
+        if not (self.spatialParams['dir'] / 'argile' / 'argile.geojson').is_file():
+            download_argile(Path('path_to_database'), code_dept, self.spatialParams['dir'] / 'argile')
+        
+        raster_argile(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.departement)
+
     def process(self, start, stop, resolution):
         """
         Main pipeline to generate the dataset for a department.
