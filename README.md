@@ -7,7 +7,10 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 ### Description
 
 #### Database
-The folder contains code for constructing the target and creating the 3D raster features
+The folder contains code for constructing the target and creating the 3D raster features.
+
+How to use :
+python generate_database.py -m True -t True -s True -r 2x2
 
 #### models
 The folder contains the model's code used in the article and the high-resolution image of the model's architecture.
