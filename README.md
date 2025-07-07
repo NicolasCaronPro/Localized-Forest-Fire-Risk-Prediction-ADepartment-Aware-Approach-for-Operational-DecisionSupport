@@ -25,6 +25,11 @@ python generate_database.py -m True -t True -s True -r 2x2
 
 * **Targets**
   * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
+  * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
+  * `tools_functions.py` – utility functions used in the probabilistic pipeline.
+  * `dico_departements.py` – departments lookup for target generation.
+  * `check.ipynb` – notebook validating the target creation process.
+  * `bdiff_plot.png` – example difference plot produced during validation.
 
 #### models
 This folder implements the machine learning models and evaluation metrics used in the article.
