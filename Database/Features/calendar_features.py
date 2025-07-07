@@ -1,3 +1,29 @@
+"""
+This code defines a set of utilities and a function to generate calendar-based features for a machine learning model using French context data. Here's a high-level explanation:
+
+    Holidays and lockdowns: It loads French public holidays, holiday eves, and school vacations (2017–2023). It also defines specific curfew periods and COVID lockdown periods in France.
+
+    Date adjustments: The ajuster_jour_annee function accounts for leap years when computing the day of the year.
+
+    Academic zones: The get_academic_zone function maps each French education region to its vacation calendar zone (A, B, or C), considering historical changes like the Normandie merger.
+
+    Main function get_calendar_features(...):
+
+        For each date and subnode (geographical unit), it computes:
+
+            Month, day of year, weekday, weekend indicator
+
+            Whether it's during curfew, lockdown, or Ramadan
+
+            Whether it's a public holiday, holiday eve, or school holiday
+
+        It encodes these calendar variables and computes aggregated features: mean, max, min, and sum over the calendar variables.
+
+Essentially, the function builds a feature matrix X with rich time-related data to help the model understand seasonality, public behavior, and government policies.
+"""
+
+
+
 import vacances_scolaires_france
 import jours_feries_france
 import convertdate
