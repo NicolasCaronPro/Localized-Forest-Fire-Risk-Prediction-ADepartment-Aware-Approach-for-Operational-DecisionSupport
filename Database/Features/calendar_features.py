@@ -118,13 +118,15 @@ def get_calendar_features(subnode, allDates):
   """
   ids_columns =  ['graph_id', 'id', 'longitude', 'latitude', 'departement', 'date']
   calendar_variables = ['month', 'dayofyear', 'dayofweek', 'isweekend', 'couvrefeux', 'confinemenent',
-                    'ramadan', 'bankHolidays', 'bankHolidaysEve', 'holidays', 'holidaysBorder',
-                    'calendar_mean', 'calendar_min', 'calendar_max', 'calendar_sum']
+                        'ramadan', 'bankHolidays', 'bankHolidaysEve', 'holidays', 'holidaysBorder',
+                        'calendar_mean', 'calendar_min', 'calendar_max', 'calendar_sum']
   band = calendar_variables[0]
-  X = np.zeros((subnode.shape[0], len(calendar_variables)
-  for unDate, date in enumerated(allDates):
+  features_name = calendar_variables
+  size_calendar = len(calendar_variables)
+  X = np.zeros((subnode.shape[0], len(calendar_variables)))
+  for unDate, date in enumerate(allDates):
     ddate = dt.datetime.strptime(date, '%Y-%m-%d')
-    index = np.argwhere((subNode[:, ids_columns.index('date')] == unDate))
+    index = np.argwhere((subnode[:, ids_columns.index('date')] == unDate))
     X[index, calendar_variables.index(band)] = int(date.split('-')[1]) # month
     X[index, calendar_variables.index(band) + 1] = ajuster_jour_annee(ddate, ddate.timetuple().tm_yday) # dayofyear
     X[index, calendar_variables.index(band) + 2] = ddate.weekday() # dayofweek
@@ -156,4 +158,4 @@ def get_calendar_features(subnode, allDates):
         else:
             logger.info(f'Unknow operation {var_ir}')
             exit(1)
-return X
+  return X
