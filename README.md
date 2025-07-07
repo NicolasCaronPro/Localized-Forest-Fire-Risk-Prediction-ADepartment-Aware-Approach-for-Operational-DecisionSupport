@@ -7,15 +7,36 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 ### Description
 
 #### Database
-The folder contains code for constructing the target and creating the 3D raster features.
+This folder contains the scripts used to create the input features and targets.
+To build the full dataset you can run for instance:
 
-How to use :
+```bash
 python generate_database.py -m True -t True -s True -r 2x2
+```
+
+**Contents**
+
+* **Features**
+  * `generate_database.py` – main driver that downloads and rasterises the data for each department.
+  * `calendar_features.py` – generates calendar features such as public holidays and lockdown periods.
+  * `download.py` – helpers to retrieve and convert geographic datasets (population, roads, elevation…).
+  * `tools.py` – geospatial utilities and fire index calculations.
+  * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
+
+* **Targets**
+  * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
 
 #### models
-The folder contains the model's code used in the article and the high-resolution image of the model's architecture.
+This folder implements the machine learning models and evaluation metrics used in the article.
+
+* `dp_models.py` – PyTorch neural networks (GRU, LSTM and spatio‑temporal variants).
+* `skl_models.py` – scikit-learn/XGBoost/LightGBM implementations.
+* `score.py` – functions to compute metrics such as IoU and F1.
+* `ModelArchitecture.drawio.png` – high resolution diagram of the architecture.
 
 ### supplementary_materials.pdf
-The folder contains additional figures, tables, and the full list of features used to train the models.
+Contains the figures, tables and the full list of variables used to train the models.
 
-Python3.9 version
+### Root files
+
+* `requirements.txt` – Python dependencies required to run the scripts.
