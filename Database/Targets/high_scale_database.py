@@ -441,8 +441,5 @@ if __name__ == "__main__":
     check_and_create_path(Path(f'{output_dataset}'))
     fp.to_csv(f'{output_dataset}/{sinister}.csv', index=False)
 
-    model = Probabilistic(n_pixel_x, n_pixel_y, 1, logistic, dir_output, resolution)
-    model._process_input_raster(dims, input, len(departements), True, departements, doPast, creneaux, departements, False)
-
     #if not doPast:
     #    remove_0_risk_pixel(dir_output, resolution, departements)
