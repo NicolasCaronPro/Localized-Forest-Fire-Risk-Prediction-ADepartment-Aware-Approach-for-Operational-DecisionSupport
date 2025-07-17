@@ -67,7 +67,7 @@ This folder implements the machine learning models and evaluation metrics used i
 * `dp_models.py` – PyTorch neural networks (GRU, LSTM and spatio‑temporal variants).
 * `skl_models.py` – scikit-learn/XGBoost/LightGBM implementations.
 * `score.py` – functions to compute metrics such as IoU and F1.
-* `ModelArchitecture.drawio.png` – high resolution diagram of the architecture.
+* `ModelArchitecture.drawio.png` – high-resolution diagram of the architecture.
 
 ### supplementary_materials.pdf
 Contains the figures, tables and the full list of variables used to train the models.
@@ -75,3 +75,10 @@ Contains the figures, tables and the full list of variables used to train the mo
 ### Root files
 
 * `requirements.txt` – Python dependencies required to run the scripts.
+
+Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
+
+> **If you use our code, please cite:**
+> 
+> Caron, N., Guyeux, C., Noura, H., & Aynes, B. (2025). *Localized Forest Fire Risk Prediction: A Department-Aware Approach for Operational Decision Support*. arXiv:2506.04254. [https://arxiv.org/abs/2506.04254](https://arxiv.org/abs/2506.04254)
+
