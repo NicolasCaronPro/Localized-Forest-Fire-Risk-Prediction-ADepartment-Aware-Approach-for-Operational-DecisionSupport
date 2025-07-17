@@ -270,7 +270,8 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
                     dir_raster)
 
     database.process(start, stop, resolution)
-
+    concat_xarrays(dir_raster, find_dates_between(start, stop))
+    
 if __name__ == '__main__':
     RASTER = True
     parser = argparse.ArgumentParser(
