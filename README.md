@@ -10,12 +10,12 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes in storage. 
 To compute the features
 ```bash
-python generate_database.py -m True -t True -s True -r 2x2
+python3.9 generate_database.py -m True -t True -s True -r 2x2
 ```
 
 To compute the target for fire occurrence
 ```bash
-python high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
+python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
 ```
 
 **Contents**
