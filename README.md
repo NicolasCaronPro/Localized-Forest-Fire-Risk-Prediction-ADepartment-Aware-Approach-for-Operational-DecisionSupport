@@ -22,6 +22,7 @@ python generate_database.py -m True -t True -s True -r 2x2
   * `download.py` – helpers to retrieve and convert geographic datasets (population, roads, elevation…).
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
+  * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat and Sentinel imagery from Google Earth Engine, including cloud masking and index computation steps.
   * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
   * Features have been aggregated by departments (average, maximum, and minimum) (code in progress)
  
