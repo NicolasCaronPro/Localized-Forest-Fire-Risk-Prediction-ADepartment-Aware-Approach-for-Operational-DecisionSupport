@@ -22,18 +22,20 @@ python generate_database.py -m True -t True -s True -r 2x2
   * `download.py` – helpers to retrieve and convert geographic datasets (population, roads, elevation…).
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
-  * The code will generate a pickle file for each feature, files will be located in the `dir_raster` directory.
+  * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
+  * Features have been aggregated by departments (average, maximum, and minimum) (code in progress) 
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
-  * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
   * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
   * `tools_functions.py` – utility functions used in the probabilistic pipeline.
   * `dico_departements.py` – departments lookup for target generation.
   * `check.ipynb` – notebook validating the target creation process.
   * `bdiff_plot.png` – example difference plot produced during validation.
+  * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
+  * Targets have been summed by departments, taking the total number of fires (or burned area) in a day (code in progress)
 
-#### models
+#### Models
 This folder implements the machine learning models and evaluation metrics used in the article.
 
 * `dp_models.py` – PyTorch neural networks (GRU, LSTM and spatio‑temporal variants).
