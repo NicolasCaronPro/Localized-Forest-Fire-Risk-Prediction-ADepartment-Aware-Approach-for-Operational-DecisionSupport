@@ -873,7 +873,7 @@ def class_window_max(dataset, group_col, column, shifts):
     
     return dataset
 
-def post_process_model(train_dataset, val_dataset, test_dataset, dir_post_process, graph):
+def process_target(train_dataset, val_dataset, test_dataset, dir_post_process, graph):
 
     graph_method = graph.graph_method
 
