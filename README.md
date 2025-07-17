@@ -36,7 +36,15 @@ python generate_database.py -m True -t True -s True -r 2x2
 | Population     | OK            |
 | Forest cover   | OK |
 | Clay soil      |To do              |
+| Calendar      | OK              |
 
+
+#### EncoderAndClustering
+This folder gathers utilities to encode categorical features and cluster time series.
+These scripts rely on the pickle files generated during the dataset creation phase.
+
+* `encoding.py` – prepares and encodes the variables and saves the results as pickle files.
+* `time_series_clustering.py` – groups time series using the encoded data.
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
