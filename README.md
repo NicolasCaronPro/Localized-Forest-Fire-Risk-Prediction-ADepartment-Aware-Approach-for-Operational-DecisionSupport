@@ -24,6 +24,7 @@ python generate_database.py -m True -t True -s True -r 2x2
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
 
 * **Targets**
+  * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
   * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
   * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
   * `tools_functions.py` – utility functions used in the probabilistic pipeline.
