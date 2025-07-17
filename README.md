@@ -7,7 +7,7 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 ### Description
 
 #### Database
-This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a datacube (xarray) structured by latitude, longitude, and date.
+This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a data cube (xarray) structured by latitude, longitude, and date using the `concat_xarrays` function.
 To compute the features
 ```bash
 python3.9 generate_database.py -m True -t True -s True -r 2x2
@@ -68,7 +68,7 @@ This folder implements the machine learning models and evaluation metrics used i
 * `skl_models.py` – scikit-learn/XGBoost/LightGBM implementations.
 * `score.py` – functions to compute metrics such as IoU and F1.
 * `ModelArchitecture.drawio.png` – high-resolution diagram of the architecture.
-
+  
 ### supplementary_materials.pdf
 Contains the figures, tables and the full list of variables used to train the models.
 
