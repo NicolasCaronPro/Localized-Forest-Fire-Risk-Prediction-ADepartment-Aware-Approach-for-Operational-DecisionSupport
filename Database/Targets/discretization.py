@@ -734,145 +734,6 @@ class ScalerClassRisk:
         else:
             return self.fit_predict(X, sinisters, ids, ids_preprocessor)
 
-# Fonction pour calculer la somme dans une fenêtre de rolling, incluant les fenêtres inversées
-def calculate_rolling_sum(dataset, column, shifts, group_col, func):
-    """
-    Calcule la somme rolling sur une fenêtre donnée pour chaque groupe.
-    Combine les fenêtres normales et inversées.
-
-    :param dataset: Le DataFrame Pandas.
-    :param column: Colonne sur laquelle appliquer le rolling.
-    :param shifts: Taille de la fenêtre rolling.
-    :param group_col: Colonne pour le groupby.
-    :param func: Fonction à appliquer sur les fenêtres.
-    :return: Colonne calculée avec la somme rolling bidirectionnelle.
-    """
-    if shifts == 0:
-        return dataset[column].values
-    
-    dataset.reset_index(drop=True)
-    
-    # Rolling forward
-    forward_rolling = dataset.groupby(group_col)[column].rolling(window=shifts).apply(func).values
-    forward_rolling[np.isnan(forward_rolling)] = 0
-    
-    # Rolling backward (inversé)
-    backward_rolling = (
-        dataset.iloc[::-1]
-        .groupby(group_col)[column]
-        .rolling(window=shifts, min_periods=1)
-        .apply(func, raw=True)
-        .iloc[::-1]  # Remettre dans l'ordre original
-    ).values
-    backward_rolling[np.isnan(backward_rolling)] = 0
-
-    # Somme des deux fenêtres
-    return forward_rolling + backward_rolling - dataset[column].values
-    #return forward_rolling
-
-def calculate_rolling_sum_per_col_id(dataset, column, shifts, group_col, func):
-    """
-    Calcule la somme rolling sur une fenêtre donnée pour chaque col_id sans utiliser des boucles sur les indices internes.
-    Combine les fenêtres normales et inversées, tout en utilisant rolling.
-
-    :param dataset: Le DataFrame Pandas.
-    :param column: Colonne sur laquelle appliquer le rolling.
-    :param shifts: Taille de la fenêtre rolling.
-    :param group_col: Colonne identifiant les groupes (col_id).
-    :param func: Fonction à appliquer sur les fenêtres.
-    :return: Numpy array contenant les sommes rolling bidirectionnelles pour chaque col_id.
-    """
-    if shifts == 0:
-        return dataset[column].values
-
-    # Initialiser un tableau pour stocker les résultats
-    result = np.zeros(len(dataset))
-
-    # Obtenir les valeurs uniques de col_id
-    unique_col_ids = dataset[group_col].unique()
-
-    # Parcourir chaque groupe col_id
-    for col_id in unique_col_ids:
-        # Filtrer le groupe correspondant
-        group_data = dataset[dataset[group_col] == col_id]
-        group_data.sort_values('date', inplace=True)
-
-        # Calculer rolling forward
-        forward_rolling = group_data[column].rolling(window=shifts, min_periods=1).apply(func, raw=True).values
-
-        # Calculer rolling backward (fenêtres inversées)
-        backward_rolling = (
-            group_data[column][::-1]
-            .rolling(window=shifts, min_periods=1)
-            .apply(func, raw=True)[::-1]
-            .values
-        )
-
-        # Combine forward et backward
-        group_result = forward_rolling + backward_rolling - group_data[column].values
-
-        # Affecter le résultat au tableau final
-        result[group_data.index] = group_result
-
-    return result
-
-def class_window_sum(dataset, group_col, column, shifts):
-    # Initialize a column to store the rolling aggregation
-    column_name = f'nbsinister_sum_{shifts}'
-    dataset[column_name] = 0.0
-
-    # Case when window_size is 1
-    if shifts == 0:
-        dataset[column_name] = dataset[column].values
-        return dataset
-    else:
-        # For each unique graph_id
-        for graph_id in dataset[group_col].unique():
-            # Filter data for the current graph_id
-            df_graph = dataset[dataset[group_col] == graph_id]
-
-            # Iterate through each row in df_graph
-            for idx, row in df_graph.iterrows():
-                # Define the window bounds
-                date_min = row['date'] - shifts
-                date_max = row['date'] + shifts
-                
-                # Filter rows within the date window
-                window_df = df_graph[(df_graph['date'] >= date_min) & (df_graph['date'] <= date_max)]
-                
-                # Apply the aggregation function
-                dataset.at[idx, column_name] = window_df[column].sum()
-    return dataset
-
-def class_window_max(dataset, group_col, column, shifts):
-    # Initialize a column to store the rolling aggregation
-    column_name = f'nbsinister_max_{shifts}'
-    dataset[column_name] = 0.0
-
-    # Case when window_size is 1
-    if shifts == 0:
-        dataset[column_name] = dataset[column].values
-        return dataset
-    else:
-        # For each unique graph_id
-        for graph_id in dataset[group_col].unique():
-            # Filter data for the current graph_id
-            df_graph = dataset[dataset[group_col] == graph_id]
-
-            # Iterate through each row in df_graph
-            for idx, row in df_graph.iterrows():
-                # Define the window bounds
-                date_min = row['date'] - shifts
-                date_max = row['date'] + shifts
-                
-                # Filter rows within the date window
-                window_df = df_graph[(df_graph['date'] >= date_min) & (df_graph['date'] <= date_max)]
-                
-                # Apply the aggregation function
-                dataset.at[idx, column_name] = window_df[column].max()
-    
-    return dataset
-
 def process_target(train_dataset, val_dataset, test_dataset, dir_post_process, graph):
 
     graph_method = graph.graph_method
@@ -885,7 +746,6 @@ def process_target(train_dataset, val_dataset, test_dataset, dir_post_process, g
         test_dataset_ = test_dataset.copy(deep=True)
     else:
         def keep_one_per_pair(dataset):
-            # Supprime les doublons en gardant uniquement la première occurrence par paire (graph_id, date)
             return dataset.drop_duplicates(subset=['graph_id', 'date'], keep='first')
 
         train_dataset_ = keep_one_per_pair(train_dataset)
@@ -922,12 +782,11 @@ def process_target(train_dataset, val_dataset, test_dataset, dir_post_process, g
 
     new_cols.append('burnedarea-kmeans-5-Class-Dept')
 
-    ###############################################################################
+    ################################## Pst Risk and Past burned area feature ########################################
 
     if graph.sequences_month is None:
         graph.compute_sequence_month(pd.concat([train_dataset, test_dataset]), graph.dataset_name)
-
-    #conv_types = ['cubic', 'gaussian', 'circular', 'quartic', 'mean', 'median', 'max', 'sum', 'laplace', 'laplace+mean']
+    
     conv_types = ['cubic']
 
     kernels = ['Specialized']
@@ -939,57 +798,7 @@ def process_target(train_dataset, val_dataset, test_dataset, dir_post_process, g
     for conv_type in conv_types:
         for kernel in kernels:
             print(f"Testing with convolution type: {conv_type}")
-
-            # Sélection du préprocesseur
-            preprocessor = PreprocessorConv(graph=graph, conv_type=conv_type, kernel=kernel, id_col=['month_non_encoder', 'graph_id'])
-
-            # Définition de l'objet ScalerClassRisk
-            class_risk = KMeansRiskZerosHandle(n_clusters=n_clusters)
-            obj = ScalerClassRisk(
-                col_id='departement',
-                dir_output=dir_post_process,
-                target='nbsinister',
-                scaler=None,
-                class_risk=class_risk,
-                preprocessor=preprocessor
-            )
-
-            # Application du fit et prédictions
-            obj.fit(
-                train_dataset_['nbsinister'].values,
-                train_dataset_['nbsinister'].values,
-                train_dataset_['departement'].values,
-                train_dataset_[['month_non_encoder', 'graph_id']].values
-            )
-
-            train_col = f"nbsinister-kmeans-{n_clusters}-Class-Dept-{conv_type}-{kernel}"
-            val_col = f"nbsinister-kmeans-{n_clusters}-Class-Dept-{conv_type}-{kernel}"
-            test_col = f"nbsinister-kmeans-{n_clusters}-Class-Dept-{conv_type}-{kernel}"
-
-            train_dataset_[train_col] = obj.predict(
-                train_dataset_['nbsinister'].values,
-                train_dataset_['nbsinister'].values,  # Ajout de dataset['nbsinister'] comme 2ème argument
-                train_dataset_['departement'].values,
-                train_dataset_[['month_non_encoder', 'graph_id']].values
-            )
-
-            val_dataset_[val_col] = obj.predict(
-                val_dataset_['nbsinister'].values,
-                val_dataset_['nbsinister'].values,  # Ajout de dataset['nbsinister'] comme 2ème argument
-                val_dataset_['departement'].values,
-                val_dataset_[['month_non_encoder', 'graph_id']].values
-            )
-            test_dataset_[test_col] = obj.predict(
-                test_dataset_['nbsinister'].values,
-                test_dataset_['nbsinister'].values,  # Ajout de dataset['nbsinister'] comme 2ème argument
-                test_dataset_['departement'].values,
-                test_dataset_[['month_non_encoder', 'graph_id']].values
-            )
-
-            # Stockage des résultats
-            res[obj.name] = deepcopy(obj)
-            new_cols.append(train_col)
-
+        
             train_col = f"nbsinisterDaily-kmeans-{n_clusters}-Class-Dept-{conv_type}-{kernel}-Past"
     
             # Sélection du préprocesseur
