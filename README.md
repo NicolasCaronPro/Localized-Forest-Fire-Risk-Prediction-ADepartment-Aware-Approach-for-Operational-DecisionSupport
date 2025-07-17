@@ -23,7 +23,18 @@ python generate_database.py -m True -t True -s True -r 2x2
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
   * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
-  * Features have been aggregated by departments (average, maximum, and minimum) (code in progress) 
+  * Features have been aggregated by departments (average, maximum, and minimum) (code in progress)
+ 
+* **Automation**
+| Feature        | Automation        |
+|----------------|-------------------|
+| Meteorological |      OK             |
+| Sentinel       |      Need GEE account and               |
+| Landcover      |      Need original sources             |
+| Elevation      |      Almost OK             |
+| Population     |      OK             |
+| Forest cover   |      OK             |
+| Clay soil      |      Need original sources             |
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
