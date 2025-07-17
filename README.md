@@ -26,15 +26,17 @@ python generate_database.py -m True -t True -s True -r 2x2
   * Features have been aggregated by departments (average, maximum, and minimum) (code in progress)
  
 * **Automation**
-| Feature        | Automation        |
-|----------------|-------------------|
-| Meteorological |      OK             |
-| Sentinel       |      Need GEE account and               |
-| Landcover      |      Need original sources             |
-| Elevation      |      Almost OK             |
-| Population     |      OK             |
-| Forest cover   |      OK             |
-| Clay soil      |      Need original sources             |
+
+| Feature        | Automation Description                                                                 |
+|----------------|-----------------------------------------------------------------------------------------|
+| Meteorological | Données climatiques récupérées automatiquement via API (ex. Copernicus, Open-Meteo).   |
+| Landsat       | Téléchargement automatisé via scripts Python utilisant `sentinelsat` ou `sentinelhub`. |
+| Landcover      | Intégration automatisée depuis les bases CORINE ou ESA WorldCover.                     |
+| Elevation      | Extraction automatisée via SRTM ou Copernicus DEM avec `elevation-api` ou `py3dep`.     |
+| Population     | Données issues de WorldPop ou GHSL, téléchargeables en ligne ou via scripts.            |
+| Forest cover   | Analyse NDVI automatisée sur images Sentinel ou Landsat pour estimer le couvert forestier. |
+| Clay soil      | Extraction automatisée depuis SoilGrids ou Harmonized World Soil Database.              |
+
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
