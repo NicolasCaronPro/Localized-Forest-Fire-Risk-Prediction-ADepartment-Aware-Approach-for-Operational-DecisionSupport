@@ -134,6 +134,20 @@ def get_academic_zone(name, date):
 
 def encode(path_to_target, trainDates, expe, train_departements, dir_output):
 
+    """
+    Create the catboost encoding for all categorical features
+
+    Args:
+        path_to_target (Path): directory of the target features computed in Target section
+        trainDates (list): List of training dates
+        expe (str): suffix of the experiment (Specify what you want) 
+        train_departements (list):  List of training departments
+        dir_output (Path): Output directory
+
+    Returns:
+        
+    """
+
     jours_feries = sum([list(jours_feries_france.JoursFeries.for_year(k).values()) for k in range(2017,2023)],[]) # French Jours fériés, used in features_*.py 
     veille_jours_feries = sum([[l-dt.timedelta(days=1) for l \
                 in jours_feries_france.JoursFeries.for_year(k).values()] for k in range(2017,2023)],[]) # French Veille Jours fériés, used in features_*.py 
