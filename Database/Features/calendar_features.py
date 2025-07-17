@@ -132,7 +132,12 @@ def get_calendar_features(subnode, allDates):
     X[index, calendar_variables.index(band) + 2] = ddate.weekday() # dayofweek
     X[index, calendar_variables.index(band) + 3] = ddate.weekday() >= 5 # isweekend
     X[index, calendar_variables.index(band) + 4] = pendant_couvrefeux(ddate) # couvrefeux
-    X[index, calendar_variables.index(band) + 5] = (1 if dt.datetime(2020, 3, 17, 12) <= ddate <= dt.datetime(2020, 5, 11) else 0) or 1 if dt.datetime(2020, 10, 30) <= ddate <= dt.datetime(2020, 12, 15) else 0# confinement
+      
+    X[index, calendar_variables.index(band) + 5] = if (
+                dt.datetime(2020, 3, 17, 12) <= ddate <= dt.datetime(2020, 5, 11)
+                or dt.datetime(2020, 10, 30) <= ddate <= dt.datetime(2020, 12, 15)
+            ) else 0
+    
     X[index, calendar_variables.index(band) + 6] = 1 if convertdate.islamic.from_gregorian(ddate.year, ddate.month, ddate.day)[1] == 9 else 0 # ramadan
     X[index, calendar_variables.index(band) + 7] = 1 if ddate in jours_feries else 0 # bankHolidays
     X[index, calendar_variables.index(band) + 8] = 1 if ddate in veille_jours_feries else 0 # bankHolidaysEve
