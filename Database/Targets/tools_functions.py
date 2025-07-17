@@ -497,7 +497,7 @@ def create_spatio_temporal_sinister_image(firepoints : pd.DataFrame,
             continue
 
         hexaFire = regions.copy(deep=True)
-        if sinister_encoding == 'occurence':
+        if sinister_encoding == 'occurrence':
             hexaFire['is'+sinisterType] = 0
             hexaFire['nb'+sinisterType] = 0
             
