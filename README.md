@@ -29,13 +29,13 @@ python generate_database.py -m True -t True -s True -r 2x2
 
 | Feature        | Automation Description                                                                 |
 |----------------|-----------------------------------------------------------------------------------------|
-| Meteorological | Données climatiques récupérées automatiquement via API (ex. Copernicus, Open-Meteo).   |
-| Landsat       | Téléchargement automatisé via scripts Python utilisant `sentinelsat` ou `sentinelhub`. |
-| Landcover      | Intégration automatisée depuis les bases CORINE ou ESA WorldCover.                     |
-| Elevation      | Extraction automatisée via SRTM ou Copernicus DEM avec `elevation-api` ou `py3dep`.     |
-| Population     | Données issues de WorldPop ou GHSL, téléchargeables en ligne ou via scripts.            |
-| Forest cover   | Analyse NDVI automatisée sur images Sentinel ou Landsat pour estimer le couvert forestier. |
-| Clay soil      | Extraction automatisée depuis SoilGrids ou Harmonized World Soil Database.              |
+| Meteorological | OK   |
+| Landsat       | Need GEE account |
+| Landcover      | Need original sources                    |
+| Elevation      | To Do    |
+| Population     | OK            |
+| Forest cover   | OK |
+| Clay soil      |To do              |
 
 
 * **Targets**
