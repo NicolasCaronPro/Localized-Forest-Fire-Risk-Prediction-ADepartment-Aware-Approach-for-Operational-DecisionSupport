@@ -212,13 +212,10 @@ def download_region(departement, dir_output):
     region.to_file(dir_output / 'geo.geojson')  # save result
 
 def download_hexagones(path, geo, dir_output, departement):
-    """Filters a hexagonal grid file to match the specified region and exports it to GeoJSON. See https://www.kontur.io/datasets/population-dataset/"""
+    """Filters a hexagonal grid file to match the specified region and exports it to GeoJSON. hexagones_france is equal https://www.kontur.io/datasets/population-dataset/"""
     print('CREATE HEXAGONES')  # progress
     check_and_create_path(dir_output)  # ensure folder
-    if 'corse' in departement:
-        hexa_france = gpd.read_file(path / 'h3_corse_7.gpkg')  # load Corsica grid
-    else:
-        hexa_france = gpd.read_file(path / 'hexagones_france.gpkg')  # load mainland grid
+    hexa_france = gpd.read_file(path / 'hexagones_france.gpkg')  # load mainland grid
     hexa_france['isdep'] = hexa_france['geometry'].apply(lambda x : geo.contains(x))  # filter by geometry
     hexa = hexa_france[hexa_france['isdep']]  # keep matching cells
     hexa.to_file(dir_output / 'hexagones.geojson', driver='GeoJSON')  # export
