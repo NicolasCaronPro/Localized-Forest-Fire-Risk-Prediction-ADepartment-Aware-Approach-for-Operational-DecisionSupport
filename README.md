@@ -22,6 +22,7 @@ python generate_database.py -m True -t True -s True -r 2x2
   * `download.py` – helpers to retrieve and convert geographic datasets (population, roads, elevation…).
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
+  * The code will generate a pickle file for each feature, files will be located in the `dir_raster` directory.
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
