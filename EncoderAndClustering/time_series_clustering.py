@@ -12,14 +12,11 @@ def read_object(filename: str, path : Path):
 def cluster_time_series_from_targets(
     departments,
     target,
-    train_date,
+    train_dates,
     all_dates,
     drop_departments,
     root_target,
     resolution,
-    scale,
-    base,
-    graph_method,
     raster_dir,
     n_clusters=4,
     distance_metric="dtw",
@@ -37,9 +34,6 @@ def cluster_time_series_from_targets(
         drop_departments (list): Departments to exclude from processing.
         root_target (Path): Root directory containing target data.
         resolution (str): Data resolution folder name.
-        scale (str): Raster scale identifier.
-        base (str): Base name used in raster files.
-        graph_method (str): Graph method name used in raster files.
         raster_dir (Path): Directory where raster files are stored.
         n_clusters (int): Number of clusters.
         distance_metric (str): Clustering distance metric (e.g., "dtw").
@@ -57,6 +51,8 @@ def cluster_time_series_from_targets(
     dir_target_bin = Path('path_to_target')
     target_per_node = {}
 
+    train_dates_id = np.asarray([all_dates.index(date) for date in train_dates])
+
     for dept in departments:
         if dept in drop_departments:
             continue
@@ -66,21 +62,13 @@ def cluster_time_series_from_targets(
         assert target_value is not None, f"Missing target for department {dept}"
 
         # Time slice
-        target_value = target_value[:, :, all_dates.index('2018-01-01'):all_dates.index(train_date)]
+        target_value = target_value[:, :, train_dates_id]
 
-        # Load raster
-        raster_file = f'{dept}rasterScale{scale}_{base}_{graph_method}.pkl'
-        raster = read_object(raster_file, raster_dir)
-        assert raster is not None, f"Missing raster for department {dept}"
-
-        nodes = np.sort(np.unique(raster[~np.isnan(raster)]))
-
-        for node in nodes:
-            target_vector = np.nansum(target_value[raster == node], axis=0)
-            target_per_node[node] = target_vector
+        target_vector = np.nansum(target_value, axis=0)
+        target_per_dept[dept] = target_vector
 
     # Convert to matrix
-    time_series_matrix = np.asarray(list(target_per_node.values()))
+    time_series_matrix = np.asarray(list(target_per_dept.values()))
 
     # Clustering
     cluster_model = TimeSeriesKMeans(
@@ -93,7 +81,7 @@ def cluster_time_series_from_targets(
     all_clusters = cluster_model.predict(time_series_matrix)
 
     node_cluster = {
-        node: cluster for node, cluster in zip(target_per_node.keys(), all_clusters)
+        node: cluster for node, cluster in zip(target_per_dept.keys(), all_clusters)
     }
 
     return cluster_model, node_cluster, all_clusters
