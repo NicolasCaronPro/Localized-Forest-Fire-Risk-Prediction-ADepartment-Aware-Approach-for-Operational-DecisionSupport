@@ -7,7 +7,7 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 ### Description
 
 #### Database
-This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes in storage. 
+This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a datacube (xarray) structured by latitude, longitude, and date.
 To compute the features
 ```bash
 python3.9 generate_database.py -m True -t True -s True -r 2x2
