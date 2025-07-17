@@ -7,11 +7,15 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 ### Description
 
 #### Database
-This folder contains the scripts used to create the input features and targets.
-To build the full dataset you can run for instance:
-
+This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a data cube (xarray) structured by latitude, longitude, and date using the `concat_xarrays` function.
+To compute the features
 ```bash
-python generate_database.py -m True -t True -s True -r 2x2
+python3.9 generate_database.py -m True -t True -s True -r 2x2
+```
+
+To compute the target for fire occurrence
+```bash
+python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
 ```
 
 **Contents**
@@ -48,7 +52,7 @@ These scripts rely on the pickle files generated during the dataset creation pha
 * `time_series_clustering.py` – groups time series using the encoded data.
 
 * **Targets**
-  * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We use data between 2017-06-12 and 2023-12-31
+  * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We used data between 2017-06-12 and 2023-12-31
   * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
   * `tools_functions.py` – utility functions used in the probabilistic pipeline.
   * `dico_departements.py` – departments lookup for target generation.
@@ -63,11 +67,18 @@ This folder implements the machine learning models and evaluation metrics used i
 * `dp_models.py` – PyTorch neural networks (GRU, LSTM and spatio‑temporal variants).
 * `skl_models.py` – scikit-learn/XGBoost/LightGBM implementations.
 * `score.py` – functions to compute metrics such as IoU and F1.
-* `ModelArchitecture.drawio.png` – high resolution diagram of the architecture.
-
+* `ModelArchitecture.drawio.png` – high-resolution diagram of the architecture.
+  
 ### supplementary_materials.pdf
 Contains the figures, tables and the full list of variables used to train the models.
 
 ### Root files
 
 * `requirements.txt` – Python dependencies required to run the scripts.
+
+Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
+
+> **If you use our code, please cite:**
+> 
+> Caron, N., Guyeux, C., Noura, H., & Aynes, B. (2025). *Localized Forest Fire Risk Prediction: A Department-Aware Approach for Operational Decision Support*. arXiv:2506.04254. [https://arxiv.org/abs/2506.04254](https://arxiv.org/abs/2506.04254)
+
