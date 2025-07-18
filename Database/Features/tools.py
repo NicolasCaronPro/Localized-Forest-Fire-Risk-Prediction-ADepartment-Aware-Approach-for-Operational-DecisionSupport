@@ -2291,11 +2291,11 @@ def concat_xarrays(dir_raster: Path, dates: list) -> xr.Dataset:
 
     print(np.unique(latitude))
     print(np.unique(longitude))
-
+    
     loaders = [
         (load_rasterise_meteo),
         (load_raster_cosia),
-        #(load_raster_corine),
+        (load_raster_corine),
         (load_raster_elevation),
         (load_raster_population),
         #(load_raster_vigicrues, list(dir_raster.glob("vigicrues*.pkl"))),
