@@ -42,6 +42,7 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
 | Forest cover   | OK |
 | Clay soil      |To do              |
 | Calendar      | OK              |
+| Fire point      | To do              |
 
 
 #### EncoderAndClustering
