@@ -36,7 +36,7 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
 |----------------|-----------------------------------------------------------------------------------------|
 | Meteorological | OK   |
 | Landsat       | Need GEE account |
-| Landcover      | Need original sources                    |
+| Landcover      | Need Corine Account                    |
 | Elevation      | To Do    |
 | Population     | OK            |
 | Forest cover   | OK |
