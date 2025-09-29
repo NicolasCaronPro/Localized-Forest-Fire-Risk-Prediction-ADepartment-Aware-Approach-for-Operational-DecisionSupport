@@ -1,40 +1,4 @@
 import torch
-
-##################################### SIMPLE GRAPH #####################################
-class NetGCN(torch.nn.Module):
-    def __init__(self, in_dim, hidden_dim, hidden_dim_2, output_channels, end_channels, n_sequences, graph_or_node, device, task_type, return_hidden=False):
-        super(NetGCN, self).__init__()
-        self.layer1 = GraphConv(in_dim * n_sequences, hidden_dim).to(device)
-        self.layer2 = GraphConv(hidden_dim, hidden_dim_2).to(device)
-        self.is_graph_or_node = graph_or_node == 'graph'
-        self.n_sequences = n_sequences
-        self.device = device
-        self.task_type = task_type
-        self.soft = torch.nn.Softmax(dim=1)
-        self.return_hidden = return_hidden
-
-        self.output_layer = OutputLayer(
-            in_channels=hidden_dim_2,
-            end_channels=end_channels,
-            n_steps=1,
-            device=device,
-            act_func='relu',
-            task_type=task_type,
-            out_channels=output_channels
-        )
-
-    def forward(self, features, g):
-
-        features = features.view(features.shape[0], features.shape[1] * self.n_sequences)
-
-        x = F.relu(self.layer1(g, features))
-        x = self.layer2(g, x)
-
-        hidden = x
-        logits = self.output_layer(hidden)
-        output = logits
-
-        return output, logits, hidden
     
 class MLPLayer(torch.nn.Module):
     def __init__(self, in_feats, hidden_dim, device):
