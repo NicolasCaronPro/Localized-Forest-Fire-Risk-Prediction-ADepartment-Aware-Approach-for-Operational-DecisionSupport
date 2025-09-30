@@ -66,8 +66,8 @@ These scripts rely on the pickle files generated during the dataset creation pha
 #### Models
 This folder implements the machine learning models and evaluation metrics used in the article.
 
-* `dp_models.py` – PyTorch neural networks (GRU, LSTM and spatio‑temporal variants).
-* `skl_models.py` – scikit-learn/XGBoost/LightGBM implementations.
+* `dp_models.py` – PyTorch neural networks (GRU, LSTM, GraphCastGRU, MLP, ect).
+* `skl_models.py` – scikit-learn/XGBoost/Catboost implementations.
 * `score.py` – functions to compute metrics such as IoU and F1.
 * `ModelArchitecture.drawio.png` – high-resolution diagram of the architecture.
   
