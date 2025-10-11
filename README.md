@@ -86,4 +86,5 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 
 
 ### Python Version
-3.9, 3.13
+3.9, 3.13 
+(dgl is not activate on python3.13, we recommend using 3.9 version)
