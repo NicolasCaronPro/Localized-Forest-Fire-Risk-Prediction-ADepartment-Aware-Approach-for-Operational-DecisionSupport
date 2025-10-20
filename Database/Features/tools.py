@@ -707,22 +707,6 @@ valeurs_foret_attribut = {
     "Sapin, épicéa": 21
 }
 
-valeurs_cosia_couverture = {
-    'Cosia_Building': 1,
-    'Cosia_Bare soil': 2,
-    'Cosia_Water surface': 3,
-    'Cosia_Conifer': 4,
-    'Cosia_Deciduous': 5,
-    'Cosia_Shrubland': 6,
-    'Cosia_Lawn': 7,
-    'Cosia_Crop': 8,
-}
-
-valeurs_tourbiere_couverture = {
-    'Marais': 1,
-    'Haute': 2,
-}
-
 def arrondir_avec_seuil(array, seuil):
     """
     Arrondit les éléments d'un tableau NumPy en fonction d'un seuil décimal.
@@ -746,21 +730,6 @@ def arrondir_avec_seuil(array, seuil):
     # Retourner la partie entière comme résultat arrondi
     return partie_entière
 
-def raster_argile(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, dept):
-    argile = gpd.read_file(dir_data / 'argile' / 'argile.geojson')
-    #argile = create_geocube(argile, ['NIVEAU'], -reslon, reslat)
-    try:
-        argile = rasterisation(argile, reslat, reslon, 'NIVEAU', defval=0, name=dept)
-    except:
-        argile = np.zeros(tifFile.shape)
-    argile = resize_no_dim(argile, tifFile.shape[0], tifFile.shape[1])
-    argile = arrondir_avec_seuil(argile, 0.2)
-    argile[np.isnan(tifFile)] = np.nan
-
-    outputName = 'argile.pkl'
-    f = open(dir_output / outputName,"wb")
-    pickle.dump(argile,f)
-
 def raster_foret(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, dept):
     foret = gpd.read_file(dir_data / 'BDFORET' / 'foret.geojson')
     foret = rasterisation(foret, reslat, reslon, 'code', defval=0, name=dept)
@@ -769,13 +738,8 @@ def raster_foret(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, de
     bands = np.asarray(list(bands))
     res = np.full((np.max(bands) + 1, tifFile.shape[0], tifFile.shape[1]), fill_value=0.0)
     res2 = np.full((tifFile.shape[0], tifFile.shape[1]), fill_value=np.nan)
-    res3 = np.full((np.max(bands) + 1, tifFile.shape[0], tifFile.shape[1]), fill_value=0.0)
 
     unodes = np.unique(tifFile)
-    foret_2 = np.empty((np.max(bands) + 1,*foret.shape))
-
-    for band in bands:
-        foret_2[band] = influence_index(foret == band, np.isnan(foret))
 
     for node in unodes:
         if node not in tifFile_high:
@@ -786,8 +750,6 @@ def raster_foret(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, de
 
         for band in bands:
             res[band, mask1] = (np.argwhere(foret[mask2] == band).shape[0] / foret[mask2].shape[0]) * 100
-            res3[band, mask1] = np.nanmean(foret_2[band, mask2])
-
         if res[:, mask1].shape[1] == 1:
             res2[mask1] = np.nanargmax(res[:, mask1])
         else:
@@ -804,57 +766,7 @@ def raster_foret(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, de
     outputName = 'foret_landcover.pkl'
     f = open(dir_output / outputName,"wb")
     pickle.dump(res2,f)
-
-    outputName = 'foret_influence.pkl'
-    f = open(dir_output / outputName,"wb")
-    pickle.dump(res3,f)
-
-def raster_sat(base, dir_reg, dir_output, dates):
-    size = '30m'
-    dir_sat = dir_reg / 'GEE' / size
-    res = np.full((5, base.shape[0], base.shape[1],  len(dates)), np.nan)
-    minusMask = np.argwhere(np.isnan(base))
     
-    for tifFile in dir_sat.glob('sentinel/*.tif'):
-        
-        tifFile = tifFile.as_posix()
-        dateFile = tifFile.split('/')[-1]
-        date = dateFile.split('.')[0]
-
-        if date not in dates:
-            continue
-        
-        i = dates.index(date)
-        print(dateFile, i)
-
-        sentinel, _, _ = read_tif(tifFile)
-        
-        for band in range(sentinel.shape[0]):
-            values = resize_no_dim(sentinel[band], base.shape[0], base.shape[1])
-            values[np.isnan(values)] = np.nanmean(values)
-            if i + 1 > res.shape[3]:
-                lmin = i - 14 
-                lmax = res.shape[3]
-            elif i == 0:
-                lmin = 0
-                lmax = i + 1
-            else:
-                lmin = i - 14
-                lmax = i + 1
-
-            k = lmax - lmin
-            res[band,:,:, lmin:lmax] = np.repeat(values[:,:, np.newaxis], k, axis=2)
-
-            res[:, minusMask[:,0], minusMask[:,1], :] = np.nan
-
-    
-    res[:, minusMask[:,0], minusMask[:,1], :] = np.nan
-
-    outputName = 'sentinel.pkl'
-    f = open(dir_output / outputName,"wb")
-    pickle.dump(res,f)
-    res = np.full((base.shape[0], base.shape[1], len(dates)), np.nan)
-
 def raster_sat_from_france(base, geo, dir_output, dir_france, dates):
     size = '30m'
     res = np.full((5, base.shape[0], base.shape[1], len(dates)), np.nan)
@@ -1032,9 +944,8 @@ def raster_corine(geo, dir_output, file_subpath, tifFile, tifFile_high):
 
     bands = np.arange(0, 10)
 
-    res = np.full((np.max(bands) + 1, tifFile.shape[0], tifFile.shape[1]), fill_value=0.0)
+    res = np.full((np.max(bands) + 1, tifFile.shape[0], tifFile.shape[1]), fill_value=np.nan)
     res2 = np.full((tifFile.shape[0], tifFile.shape[1]), fill_value=np.nan)
-    res3 = np.full((np.max(bands) + 1, tifFile.shape[0], tifFile.shape[1]), fill_value=0.0)
     
     height, width = tifFile_high.shape
     
@@ -1176,87 +1087,6 @@ def raster_route(dir_output, tifFile, tifFile_high, reslon, reslat, file_path, f
     outputName = 'route_landcover.pkl'
     f = open(dir_output / outputName,"wb")
     pickle.dump(res2,f)
-    
-def myFunctionDistanceDugrandCercle(outputShape, earth_radius=6371.0, resolution_lon=0.0002694945852352859, resolution_lat=0.0002694945852326214):
-    half_rows = outputShape[0] // 2
-    half_cols = outputShape[1] // 2
-
-    # Créer une grille de coordonnées géographiques avec les résolutions souhaitées
-    latitudes = np.linspace(-half_rows * resolution_lat, half_rows * resolution_lat, outputShape[0])
-    longitudes = np.linspace(-half_cols * resolution_lon, half_cols * resolution_lon, outputShape[1])
-    latitudes, longitudes = np.meshgrid(latitudes, longitudes, indexing='ij')
-
-    # Coordonnées du point central
-    center_lat = latitudes[outputShape[0] // 2, outputShape[1] // 2]
-    center_lon = longitudes[outputShape[0] // 2, outputShape[1] // 2]
-
-    # Convertir les coordonnées géographiques en radians
-    latitudes_rad = np.radians(latitudes)
-    longitudes_rad = np.radians(longitudes)
-
-    # Calculer la distance du grand cercle entre chaque point et le point central
-    delta_lon = longitudes_rad - np.radians(center_lon)
-    delta_lat = latitudes_rad - np.radians(center_lat)
-    a = np.sin(delta_lat/2)**2 + np.cos(latitudes_rad) * np.cos(np.radians(center_lat)) * np.sin(delta_lon/2)**2
-    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1-a))
-    distances = earth_radius * c
-    
-    return distances
-
-def influence_index(categorical_array, mask):
-    res = np.full(categorical_array.shape, np.nan)
-
-    kernel = myFunctionDistanceDugrandCercle((30,30))
-    #kernel = normalize(kernel, norm='l2')
-    #res[mask[:,0], mask[:,1]] = (scipy_fft_conv(categorical_array, kernel, mode='same')[mask[:,0], mask[:,1]])
-
-    res = convolve_fft(categorical_array, kernel, normalize_kernel=True, mask=mask)
-
-    return res
-
-def add_osmnx(clusterSum, dataset, dir_reg, kmeans, tifFile):
-    print('Add osmnx')
-    dir_data = dir_reg / 'osmnx'
-
-    tif, _, _ = read_tif(dir_data / 'osmnx.tif')
-    
-    sentinel, lons, lats = read_tif(tifFile)
-    nanmask = np.argwhere(np.isnan(sentinel[0]))
-    sentinel = sentinel[0]
-
-    coord = np.empty((sentinel.shape[0], sentinel.shape[1], 2))
-    tif = resize(tif, sentinel.shape[0], sentinel.shape[1], 1).astype(int)[0]
-    coord[:,:,0] = lats
-    coord[:,:,1] = lons
-
-    clustered = kmeans.predict(np.reshape(coord, (-1, coord.shape[-1])))
-    clustered = clustered.reshape(sentinel.shape[0], sentinel.shape[1]).astype(float)
-    clustered[nanmask[:,0], nanmask[:,1]] = np.nan
-
-    mask = np.argwhere(~np.isnan(tif))
-    density = influence_index(tif.astype(int), mask)
-
-    dataset['highway_min'] = 0
-    dataset['highway_max'] = 0
-    dataset['highway_std'] = 0
-    dataset['highway_mean'] = 0
-    dataset['highway_sum'] = 0
-
-    for cluster in clusterSum['cluster'].unique():
-        clusterMask = clustered == cluster
-        indexDataset = dataset[dataset['cluster'] == cluster].index.values
-
-        dataset.loc[indexDataset, 'highway_sum'] = np.nansum(density[clusterMask])
-
-        dataset.loc[indexDataset, 'highway_max'] = np.nanmax(density[clusterMask])
-
-        dataset.loc[indexDataset, 'highway_min'] = np.nanmin(density[clusterMask])
-
-        dataset.loc[indexDataset, 'highway_mean'] = np.nanmean(density[clusterMask])
-
-        dataset.loc[indexDataset, 'highway_std'] =  np.nanstd(density[clusterMask])
-    
-    return dataset
 
 def read_object(filename: str, path : Path):
     if not (path / filename).is_file():
@@ -1382,33 +1212,7 @@ def load_raster_population(dir_raster: Path, dates: list, lat, lon) -> xr.Datase
 
     coords = {"latitude": lat, "longitude": lon, "date": dates}
     return xr.Dataset(data_vars, coords=coords)
-
-def load_raster_vigicrues(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
-    """Load vigicrues rasters (12h and 16h) into an xarray."""
-    data_vars = {}
-    for file in sorted(dir_raster.glob("vigicrues*.pkl")):
-        values = pickle.load(open(file, "rb"))
-        data_vars[file.stem] = ("latitude", "longitude", "date"), values
-
-    coords = {"latitude": lat, "longitude": lon, "date": dates}
-    return xr.Dataset(data_vars, coords=coords)
-
-def load_raster_air_quality(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
-    """Load air quality rasters produced by ``rasterise_air_qualite``."""
-    data_vars = {}
-    for file in sorted(dir_raster.glob("*raw.pkl")):
-        if any(file.stem.startswith(prefix) for prefix in [
-            "NO2", "O3", "PM10", "PM25", "NO216", "O316", "PM1016", "PM2516"]):
-            values = pickle.load(open(file, "rb"))
-            data_vars[file.stem.replace("raw", "")] = (
-                "latitude",
-                "longitude",
-                "date",
-            ), values
-
-    coords = {"latitude": lat, "longitude": lon, "date": dates}
-    return xr.Dataset(data_vars, coords=coords)
-
+    
 def load_raster_sat(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
     """Load Sentinel satellite rasters."""
     sentinel = pickle.load(open(dir_raster / "sentinel.pkl", "rb"))
@@ -1474,19 +1278,6 @@ def load_raster_bdroute(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
 
     for i, band in enumerate(bands):
         data_vars[band] = (("latitude", "longitude", "date"), route[i])
-
-    coords = {"latitude": lat, "longitude": lon, "date": dates}
-    return xr.Dataset(data_vars, coords=coords)
-
-def load_raster_nappes(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
-    """Load groundwater level rasters into an xarray."""
-    data_vars = {}
-    for var in ["niveau_nappe_eau", "profondeur_nappe"]:
-        file = dir_raster / f"{var}.pkl"
-        if not file.is_file():
-            continue
-        values = pickle.load(open(file, "rb"))
-        data_vars[var] = (("latitude", "longitude", "date"), values)
 
     coords = {"latitude": lat, "longitude": lon, "date": dates}
     return xr.Dataset(data_vars, coords=coords)
