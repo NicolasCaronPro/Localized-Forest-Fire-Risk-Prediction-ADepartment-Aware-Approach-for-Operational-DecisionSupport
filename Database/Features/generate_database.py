@@ -110,18 +110,11 @@ class GenerateDatabase():
 
         raster_sat_from_france(self.h3tif, self.h3, self.dir_raster, Path('path_to_database') / 'csv' / 'france' / 'data' / 'GEE' / resolution, self.dates) # To download the original sat images, you will need a Google Earth Engine account
 
-        if not (self.spatialParams['dir'] / 'cosia' / 'cosia.geojson').is_file():
-            download_cosia(code_dept, self.region, self.spatialParams['dir'] / 'cosia')
-        raster_cosia(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.region)
+        # Add corine and bdroute
 
         if not (self.spatialParams['dir'] / 'population' / 'population.csv').is_file():
             download_population(Path('/path_to_database/csv/france/data/population'), self.region, self.spatialParams['dir'] / 'population')
-        
         raster_population(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon, self.resLat, self.spatialParams['dir'])
-
-        if not (self.spatialParams['dir'] / 'osmnx' / 'osmnx.geojson').is_file():
-            download_osnmx(self.region, self.spatialParams['dir'] / 'osmnx')
-        raster_osmnx(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon, self.resLat, self.spatialParams['dir'], self.departement)
 
         if not (self.spatialParams['dir'] / 'elevation' / 'elevation.csv').is_file():
             download_elevation(code_dept, self.region, self.spatialParams['dir'] / 'elevation')
@@ -130,11 +123,6 @@ class GenerateDatabase():
         if not (self.spatialParams['dir'] / 'BDFORET' / 'foret.geojson').is_file():
             download_foret(code_dept, self.departement, self.spatialParams['dir'])
         raster_foret(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.departement)
-
-        if not (self.spatialParams['dir'] / 'argile' / 'argile.geojson').is_file():
-            download_argile(Path('path_to_database'), code_dept, self.spatialParams['dir'] / 'argile')
-        
-        raster_argile(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon_high, self.resLat_high, self.spatialParams['dir'], self.departement)
 
     def process(self, start, stop, resolution):
         """
@@ -255,6 +243,9 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
     
     if not (dir_data / 'spatial/hexagones.geojson').is_file():
         download_hexagones(Path('path_to_database/csv/france/data/geo'), region, dir_data / 'spatial', departement)
+
+    if not (Path('path_to_database/csv/france/data/BDROUTE') / 'ROUTE500_1-0__SHP_LAMB93_FXX_2000-01-01.7z').is_file():
+        download_bdroute(Path('path_to_database/csv/france/data/BDROUTE'))
 
     h3 = gpd.read_file(dir_data / 'spatial/hexagones.geojson')
 
