@@ -261,7 +261,7 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
     
     trainDate = np.asarray([allDates.index(date) for date in trainDates])
     foret = []
-    cosia = []
+    corine = []
     corine = []
     route = []
     gt = []
@@ -279,9 +279,13 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
 
         dir_data = 'path_to_raster' / dep
 
-        tar = read_object(dep+'binScale0.pkl', path_to_target)
+        tar = read_object(dep+'binScale0.pkl', path_to_target) # pickle binary file
+        # tar = read_object('datacube.pkl', path_to_target) # xarray file
+        #tar = tar['occurence'].values
+        
         if tar is None:
             continue
+            
         tar = tar[:,:,trainDate]
         gt += list(tar[~np.isnan(tar)])
 
@@ -313,10 +317,10 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
             cluster_value += list(cluster_mask[~np.isnan(tar[:, :, 0])])
 
         ##################### Landcover #################
-        cosia_image = read_object('cosia_landcover.pkl', dir_data)
-        if cosia_image is not None:
-            cosia_image = resize_no_dim(cosia_image, tar.shape[0], tar.shape[1])
-            cosia += list(cosia_image[~np.isnan(tar[:, :, 0])])
+        corine_image = read_object('corine_landcover.pkl', dir_data)
+        if corine_image is not None:
+            corine_image = resize_no_dim(corine_image, tar.shape[0], tar.shape[1])
+            corine += list(corine_image[~np.isnan(tar[:, :, 0])])
         
         calendar = np.empty((tar.shape[2], stop_calendar))
 
@@ -362,7 +366,6 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
     cluster_value = np.asarray(cluster_value)
     landcover = np.asarray(landcover)
     argile_value = np.asarray(argile_value)
-    cosia = np.asarray(cosia)
     corine = np.asarray(corine)
     route = np.asarray(route)
     geo_array = np.asarray(geo_array)
@@ -378,7 +381,6 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
     ids_value = ids_value.reshape(-1,1)
     cluster_value = cluster_value.reshape(-1,1)
     temporalValues = temporalValues.reshape(-1,1)
-    cosia = cosia.reshape(-1,1)
     corine = corine.reshape(-1,1)
     route = route.reshape(-1,1)
 
@@ -416,10 +418,10 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
         encoder.fit(cluster_value, spatialValues)
         save_object(encoder, f'encoder_cluster.pkl', dir_output)
 
-    if cosia.shape == spatialValues.shape:
+    if corine.shape == spatialValues.shape:
         encoder = CatBoostEncoder(cols=np.arange(0, 1))
-        encoder.fit(cosia, spatialValues)
-        save_object(encoder, f'encoder_cosia_{expe}.pkl', dir_output)
+        encoder.fit(corine, spatialValues)
+        save_object(encoder, f'encoder_corine_{expe}.pkl', dir_output)
     
     # Geo
     encoder = CatBoostEncoder(cols=np.arange(0, 1))
