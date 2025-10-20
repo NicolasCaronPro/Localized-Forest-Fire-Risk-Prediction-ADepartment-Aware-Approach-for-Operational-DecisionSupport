@@ -171,7 +171,14 @@ class GenerateDatabase():
         
         self.resLon = n_pixel_x
         self.resLat = n_pixel_y
-        self.h3tif = rasterisation(self.clusterSum, n_pixel_y, n_pixel_x, column='cluster', defval=np.nan, name=self.departement+'_low')
+        self.h3tif, lon, lat = rasterisation(self.clusterSum, n_pixel_y, n_pixel_x, column='cluster', defval=np.nan, name=self.departement+'_low', return_lat_lon=True)
+        
+        logger.info(f'Low scale {self.h3tif.shape}')
+        
+        f = open(self.dir_raster / f'latitude.pkl',"wb")
+        pickle.dump(lat, f)
+        f = open(self.dir_raster / f'longitude.pkl',"wb")
+        pickle.dump(lon, f)
         logger.info(f'Low scale {self.h3tif.shape}')
 
         n_pixel_x = resolutions['0.03x0.03']['x']
