@@ -403,19 +403,7 @@ def get_fire_indices(point, date_debut, date_fin, departement):
                 df = dg
         else:
             df = pd.concat((df, dg)).reset_index(drop=True)
-
-        """dg2 = compute_fire_indices(point, debut_saison, fin_saison, True)
-        if fin_saison < fin:
-            dg3 = compute_fire_indices(point, fin_saison, fin, False)
-            if 'df' not in locals():
-                df = pd.concat((dg, dg2, dg3)).reset_index(drop=True)
-            else:
-                df = pd.concat((df, dg, dg2, dg3)).reset_index(drop=True)
-        else:
-            if 'df' not in locals():
-                df = pd.concat((dg, dg2)).reset_index(drop=True)
-            else:
-                df = pd.concat((df, dg, dg2)).reset_index(drop=True)"""
+            
     df = df[(df['creneau'] >= date_debut) & (df['creneau'] <= date_fin)]
     return df
 
