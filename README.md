@@ -40,7 +40,6 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
 | Elevation      | To Do    |
 | Population     | OK            |
 | Forest cover   | OK |
-| Clay soil      |To do              |
 | Calendar      | OK              |
 | BDroute      | To do              |
 | Fire point      | See Additionnal Files              |
