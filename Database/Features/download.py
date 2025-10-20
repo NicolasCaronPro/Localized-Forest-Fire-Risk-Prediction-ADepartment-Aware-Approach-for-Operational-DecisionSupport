@@ -137,22 +137,14 @@ def download_elevation(code_dept: int, geo, dir_output: str) -> None:
         unzip_7z(dir_output / f'COURBE_1-0__SHP_LAMB93_D0{code_dept}_2021-04-01.7z', dir_output)
     create_elevation_geojson(dir_output / f'COURBE_1-0__SHP_LAMB93_D0{code_dept}_2021-01-01', geo.bounds, dir_output)
 
-def download_cosia(code_dept: int, geo, dir_output: str) -> None:
-    """Downloads and processes COSIA land cover data for a department if available between 2019-2023. https://cosia.ign.fr/"""
-    ####################################################################################
-    #    This will take time and require high memory consumption                       #
-    ####################################################################################
-    check_and_create_path(dir_output)  # ensure directory
-    for y in np.arange(2019, 2024):  # iterate over years
-        if (dir_output / f'{dir_output}/CoSIA_D0{code_dept}_{y}.zip').is_file():
-            unzip_file(dir_output / f'CoSIA_D0{code_dept}_{y}.zip', dir_output)  # extract archive
-        if (dir_output / f'{dir_output}/CoSIA_D0{code_dept}_{y}').is_dir():
-            create_cosia_geojson(dir_output / f'CoSIA_D0{code_dept}_{y}', geo.bounds, dir_output)  # convert dataset
-            break  # stop after first available year
-    try:
-        os.remove(dir_output / f'CoSIA_D0{code_dept}_{y}.zip')  # cleanup
-    except:
-        pass  # ignore missing file
+def download_bdroute(dir_output):
+    
+    check_and_create_path(dir_output)
+    
+    if not (dir_output / 'ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03/ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03.7z').is_file():
+        url = 'https://data.geopf.fr/telechargement/download/ROUTE500/ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03/ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03.7z'
+        subprocess.run(['wget', url, '-O', f'{dir_output}/ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03.7z'], check=True)
+        unzip_7z(dir_output / 'ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03.7z', dir_output)
 
 def download_foret(code_dept: int, dept, dir_output) -> None:
     """Downloads and processes forest type land cover data from BDFORET. https://geoservices.ign.fr/bdforet#telechargementv2"""
@@ -182,22 +174,6 @@ def graph2geo(graph, nodes, edges, name):
     gdf_edges['name'] = name  # annotate edges
     nodes.append(gdf_nodes)  # store nodes
     edges.append(gdf_edges)  # store edges
-
-def download_osnmx(geo, dir_output) -> None:
-    """Downloads and processes road network data using OSMnx and exports it to GeoJSON."""
-    check_and_create_path(dir_output)  # ensure folder
-    print('DONWLOADING OSMNX')  # info
-    graph = ox.graph_from_polygon(unary_union(geo['geometry'].values), network_type='all')  # fetch graph
-    nodesArray = []  # to collect nodes
-    edgesArray = []  # to collect edges
-    graph2geo(graph, nodesArray, edgesArray, '')  # convert graph
-    edges = pd.concat(edgesArray)  # merge edges
-    subedges = edges[edges['highway'].isin(['motorway', 'primary', 'secondary', 'tertiary', 'path'])]  # filter
-    subedges['coef'] = 1  # constant coefficient
-    subedges['label'] = 0  # init label
-    for i, hw in enumerate(['motorway', 'primary', 'secondary', 'tertiary', 'path']):
-        subedges.loc[subedges['highway'] == hw, 'label'] = i + 1  # set label
-    subedges[['geometry', 'label']].to_file(dir_output / 'osmnx.geojson', driver='GeoJSON')  # export
 
 def download_region(departement, dir_output):
     """Downloads the administrative boundary (GeoJSON) of a French department.https://france-geojson.gregoiredavid.fr/"""
