@@ -40,7 +40,7 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
     meteostat.Point.alt_range = 1000
     meteostat.Point.max_count = 5
     location = meteostat.Point(point[0], point[1])
-    # logger.info(f"Calcul des indices incendie pour le point de coordonnées {point}")
+    # logger.info(f"Computing fire indices for the point with coordinates {point}")
     df = meteostat.Hourly(location, date_debut-dt.timedelta(hours=24), date_fin)
     df = df.normalize()
     df = df.fetch()
@@ -53,21 +53,21 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
     df['rhum'] = df['rhum'].apply(lambda x : min(x, 100))
     df.reset_index(inplace=True)
     df.rename({'time': 'creneau'}, axis=1, inplace=True)
-    # La vitesse du vent doit être en m/s
+    # Wind speed must be expressed in m/s
     df['wspd'] =  df['wspd'] * 1000 / 3600
     df.sort_values(by='creneau', inplace=True)
-    # Calculer la somme des précipitations des 24 heures précédentes
+    # Calculate the total precipitation from the previous 24 hours
     df['prec24h'] = df['prcp'].rolling(window=24, min_periods=1).sum()
     df['snow24h'] = df['snow'].rolling(window=24, min_periods=1).sum()
-    # Pour s'assurer que prcp24 ne contient des valeurs calculées qu'à midi (12:00)
-    # mettre à NaN les lignes qui ne correspondent pas à midi, 
-    # puis utiliser ffill pour propager la dernière valeur calculée
+    # Ensure prcp24 only contains values computed at noon (12:00)
+    # by setting rows that do not correspond to noon to NaN,
+    # then use ffill to propagate the last computed value
     df['hour'] = df['creneau'].dt.hour
     df['prec24h12'] = np.where(df['hour'] == 12, df['prec24h'], np.nan)
     df['snow24h12'] = np.where(df['hour'] == 12, df['snow24h'], np.nan)
     df['prec24h12'].ffill(inplace=True)
     df['snow24h12'].ffill(inplace=True)
-    # Données à 16h, utiles pour Nicolas
+    # 16:00 data used for Nicolas
     for col in ['temp', 'dwpt', 'rhum', 'prcp', 'wdir', 'wspd']:
         df[f'{col}16'] = df[col].copy()
         df[f'{col}16'] = np.where(df['hour'] == 16, df[f'{col}16'], np.nan)
@@ -77,20 +77,20 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
     df['prec24h16'].ffill(inplace=True)
     df['snow24h16'].ffill(inplace=True)
 
-    # Données à 12h, utiles pour Nicolas
+    # 12:00 data used for Nicolas
     for col in ['temp', 'dwpt', 'rhum', 'prcp', 'wdir', 'wspd']:
         df[f'{col}12'] = df[col].copy()
         df[f'{col}12'] = np.where(df['hour'] == 12, df[f'{col}12'], np.nan)
         df[f'{col}12'].ffill(inplace=True)
 
-    # Données à 15h, utiles pour Nesterov
+    # 15:00 data used for Nesterov
     df['temp15h'] = df['temp'].copy()
     df['temp15h'] = np.where(df['hour'] == 15, df['temp15h'], np.nan)
     df['temp15h'].ffill(inplace=True)
     df['rhum15h'] = df['rhum'].copy()
     df['rhum15h'] = np.where(df['hour'] == 15, df['rhum15h'], np.nan)
     df['rhum15h'].ffill(inplace=True)
-    # Données à 12h, utiles pour Angstroem
+    # 12:00 data used for Angstroem
     df['temp12h'] = df['temp'].copy()
     df['temp12h'] = np.where(df['hour'] == 12, df['temp12h'], np.nan)
     df['temp12h'].ffill(inplace=True)
@@ -99,29 +99,29 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
     df['rhum12h'].ffill(inplace=True)
     df.drop('hour', axis=1, inplace=True)
 
-    # Température maximale de la veille, pour le KBDI
+    # Maximum temperature from the previous day, for KBDI
     df.set_index(df['creneau'], inplace=True)
     df.drop('creneau', axis=1, inplace=True)
     daily_max_temp = df.resample('D').max()
     daily_max_temp['temp24max'] = daily_max_temp['temp'].shift(1)
     df = df.merge(daily_max_temp['temp24max'].asfreq('h', method='ffill'), left_index=True, right_index=True, how='left')    
     
-    # Précipitations de la veille, pour le KBDI
+    # Precipitation from the previous day, for KBDI
     daily_prec = df.resample('D').sum()
     daily_prec['prec24veille'] = daily_max_temp['prcp'].shift(1)
     df = df.merge(daily_prec['prec24veille'].asfreq('h', method='ffill'), left_index=True, right_index=True, how='left')    
-    # Somme des précipitations de la semaine écoulée, pour le KBDI
+    # Sum of the previous week's precipitation, for KBDI
     df['sum_rain_last_7_days'] = df['prcp'].rolling('7D').sum()
     df['sum_snow_last_7_days'] = df['snow'].rolling('7D').sum()
     
     df.reset_index(inplace=True)    
-    # Somme des précipitations consécutives, toujours pour le KBDI
-    df['no_rain'] = df['prcp'] < 1.8 # Identifier les jours sans précipitations
-    df['consecutive_rain_group'] = (df['no_rain']).cumsum() # Calculer les groupes de jours consécutifs avec précipitations
-    df['sum_consecutive_rainfall'] = df.groupby('consecutive_rain_group')['prcp'].transform('sum') # Calculer la somme des précipitations pour chaque groupe de jours consécutifs
-    df.loc[df['no_rain'], 'sum_consecutive_rainfall'] = 0 # Réinitialiser la somme à 0 pour les jours sans pluie
+    # Sum of consecutive precipitation, also for KBDI
+    df['no_rain'] = df['prcp'] < 1.8 # Identify days without precipitation
+    df['consecutive_rain_group'] = (df['no_rain']).cumsum() # Calculate groups of consecutive days with precipitation
+    df['sum_consecutive_rainfall'] = df.groupby('consecutive_rain_group')['prcp'].transform('sum') # Calculate the sum of precipitation for each group of consecutive days
+    df.loc[df['no_rain'], 'sum_consecutive_rainfall'] = 0 # Reset the sum to 0 for rain-free days
     df.drop(['no_rain', 'consecutive_rain_group'], axis=1, inplace=True)
-    # On peut maintenant calculer les indices
+    # The indices can now be calculated
     df = df.loc[df.creneau>=date_debut]
     df.reset_index(inplace=True)
 
@@ -148,7 +148,7 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
     months = df['creneau'].dt.month.to_numpy() + 1
     latitudes = np.full_like(temps, point[0])
 
-    # Day since rain
+    # Days since rain
     treshPrec24 = 1.8
     dsr = np.empty_like(prec24h12s)
     dsr[0] = int(prec24hs[0] > treshPrec24)
@@ -156,7 +156,7 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
         dsr[i] = dsr[i - 1] + 1 if prec24h12s[i] < treshPrec24 else 0
     df['days_since_rain'] = dsr
 
-    """if not saison_feux: # -> pas content car pas envie de réduire mon dataset mais on verra plus tard
+    """if not saison_feux: # -> not happy because I do not want to shrink my dataset, but we will see later
         df['dc'] = 0
         df['ffmc'] = 0
         df['dmc'] = 0
@@ -170,14 +170,13 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
         df['angstroem'] = 0
         return df"""
 
-    # Calcul du DC en passant par numpy
+    # Calculate the DC using numpy
     '''
-    Le Drought Code (DC) fait partie du Canadian Forest Fire Weather Index (FWI) System, qui est un système 
-    complet utilisé pour estimer le risque d'incendie de forêt. Le DC est spécifiquement conçu pour mesurer 
-    les effets séchants à long terme des périodes de temps sec sur les combustibles forestiers profonds. En 
-    d'autres termes, il est utilisé pour évaluer la quantité d'humidité séchée dans les matériaux organiques 
-    profonds et épais sur le sol de la forêt, qui peuvent s'enflammer et soutenir un feu de forêt même sans 
-    l'apport d'humidité pendant une longue période.
+    The Drought Code (DC) is part of the Canadian Forest Fire Weather Index (FWI) System, a comprehensive
+    framework used to estimate wildfire risk. The DC specifically measures the long-term drying effects of
+    sustained dry weather on deep forest fuels. In other words, it evaluates how much moisture has been removed
+    from thick organic materials on the forest floor that can ignite and sustain a wildfire even without new
+    moisture input for an extended period.
     '''
     dc = np.empty_like(temps)
     dc[0] = 0
@@ -198,14 +197,13 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
             continue
 
     df['dc'] = dc
-    # Calcul du FFMC en passant par numpy
+    # Calculate the FFMC using numpy
     '''
-    Le Fine Fuel Moisture Code (FFMC) est un autre composant du Canadian Forest Fire Weather Index (FWI) System, 
-    conçu pour estimer la teneur en humidité des combustibles fins et légers à la surface du sol, qui sont 
-    susceptibles de s'enflammer rapidement. Il s'agit essentiellement d'une mesure de la facilité avec laquelle 
-    ces combustibles peuvent s'enflammer et soutenir la propagation initiale d'un feu de forêt. Ces combustibles 
-    fins comprennent des éléments tels que les feuilles mortes, les brindilles, l'herbe et les petites branches 
-    qui ont un diamètre de moins de 6 mm.
+    The Fine Fuel Moisture Code (FFMC) is another component of the Canadian Forest Fire Weather Index (FWI)
+    System, designed to estimate the moisture content of fine, light fuels on the forest floor that can ignite
+    quickly. It essentially measures how easily these fuels can ignite and sustain the initial spread of a
+    wildfire. Fine fuels include items such as dead leaves, twigs, grass, and small branches with a diameter
+    of less than 6 mm.
     '''
     ffmc = np.empty_like(temps)
     ffmc[0] = 0
@@ -227,14 +225,13 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
             continue
 
     df['ffmc'] = ffmc
-    # Calcul du DMC
+    # Calculate the DMC
     '''
-    Le Duff Moisture Code (DMC) est un autre indicateur important du Canadian Forest Fire Weather Index (FWI) 
-    System. Contrairement au Fine Fuel Moisture Code (FFMC), qui évalue la teneur en humidité des combustibles 
-    fins et légers à la surface, le DMC se concentre sur la teneur en humidité des couches de litière et de 
-    matières organiques en décomposition situées juste sous la surface. Ces matériaux sont plus épais et moins 
-    volatils que les combustibles fins, et ils nécessitent donc plus de temps pour sécher et s'enflammer, mais 
-    une fois allumés, ils peuvent soutenir un feu pendant une période prolongée.
+    The Duff Moisture Code (DMC) is another key indicator within the Canadian Forest Fire Weather Index (FWI)
+    System. Unlike the Fine Fuel Moisture Code (FFMC), which evaluates the moisture content of fine, light
+    surface fuels, the DMC focuses on the moisture content of litter layers and decomposing organic matter
+    located just beneath the surface. These materials are thicker and less volatile than fine fuels, so they
+    require more time to dry and ignite, but once ignited they can sustain a fire for an extended period.
     '''
     dmc = np.empty_like(temps)
     dmc[0] = 0
@@ -256,42 +253,38 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
             continue
 
     df['dmc'] = dmc
-    # Calcul des derniers indices du FWI canadian
+    # Calculate the remaining indices from the Canadian FWI
     '''
-    L'Initial Spread Index ISI est spécifiquement conçu pour prédire la vitesse de propagation initiale d'un 
-    feu nouvellement allumé, en se basant sur les conditions météorologiques.
+    The Initial Spread Index (ISI) is specifically designed to predict the initial rate of spread of a newly
+    ignited fire based on current weather conditions.
     '''
     df['isi'] = df.apply(lambda x: firedanger.indices.isi(x.wspd, x.ffmc), axis=1)
     '''
-    Le BUI, ou Buildup Index, est conçu pour quantifier la quantité de combustible disponible pour alimenter un 
-    feu de forêt, en se concentrant principalement sur les combustibles moyens et lourds. Le BUI est utilisé pour
-    estimer la quantité totale de combustible accumulé et sa capacité à brûler, offrant ainsi une mesure de la 
-    lourdeur potentielle et de l'intensité d'un incendie.
+    The Buildup Index (BUI) is designed to quantify the amount of fuel available to feed a wildfire, focusing
+    primarily on medium and heavy fuels. The BUI estimates the total accumulated fuel and its ability to burn,
+    providing a measure of a potential fire's heaviness and intensity.
     '''
     df['bui'] = firedanger.indices.bui(df['dmc'], df['dc'])
     '''
-    Le FWI, ou Fire Weather Index, est l'indice principal du système canadien d'évaluation du danger d'incendie 
-    de forêt (Canadian Forest Fire Weather Index System). Il représente une mesure globale du danger d'incendie,
-    intégrant plusieurs sous-indices pour fournir une estimation de l'intensité potentielle d'un incendie de forêt. 
-    Le FWI est conçu pour refléter les effets combinés des conditions météorologiques actuelles sur le comportement 
-    du feu, notamment en termes de propagation et d'intensité.
+    The Fire Weather Index (FWI) is the main index of the Canadian Forest Fire Weather Index System. It provides
+    an overall measure of wildfire danger by combining several sub-indices to estimate a fire's potential
+    intensity. The FWI reflects the combined effects of current weather conditions on fire behavior, including
+    spread and intensity.
     '''
     df['fwi'] = firedanger.indices.fwi(df['isi'], df['bui'])
     '''
-    Le Daily Severity Rating (DSR) est une composante du système canadien d'évaluation du danger d'incendie de 
-    forêt (Canadian Forest Fire Weather Index System), qui fournit une évaluation quantitative de l'intensité 
-    d'un incendie de forêt potentiel pour une journée donnée. Le DSR est conçu pour traduire l'indice Fire Weather 
-    Index (FWI) en une échelle qui reflète plus directement la difficulté potentielle de contrôler un incendie, 
-    ainsi que l'intensité et l'énergie qu'un incendie pourrait dégager.
+    The Daily Severity Rating (DSR) is a component of the Canadian Forest Fire Weather Index System that provides
+    a quantitative assessment of the potential intensity of a wildfire for a given day. The DSR translates the
+    Fire Weather Index (FWI) into a scale that more directly reflects the potential difficulty of controlling a
+    fire and the intensity and energy it might release.
     '''
     df['daily_severity_rating'] = firedanger.indices.daily_severity_rating(df['fwi'])
-    # Calcul de l'indice Nesterov
+    # Calculate the Nesterov index
     '''
-    L'indice de Nesterov est un indicateur utilisé pour évaluer le risque d'incendie de forêt. Il est particulièrement 
-    utile dans les régions où la végétation est principalement constituée d'herbes et de broussailles. Cet indice est 
-    calculé à partir de données météorologiques, en particulier la température de l'air et la quantité de précipitations, 
-    et il est conçu pour refléter la sécheresse de la surface et la disponibilité des combustibles fins (comme l'herbe sèche) 
-    pour le feu.
+    The Nesterov index is an indicator used to assess wildfire risk. It is particularly helpful in regions where
+    vegetation consists mainly of grasses and shrubs. The index is calculated from meteorological data—especially
+    air temperature and precipitation amounts—and is designed to reflect surface dryness and the availability of
+    fine fuels (such as dry grass) for combustion.
     '''
     nesterov = np.empty_like(temps)
     nesterov[0] = 0
@@ -306,7 +299,7 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
             
     df['nesterov'] = nesterov
 
-    # Calcul de l'indice de sécheresse Munger
+    # Calculate the Munger drought index
     munger = np.empty_like(temps)
     munger[0] = 0
     start = False
@@ -320,11 +313,11 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
 
     df['munger'] = munger
 
-    # Calcul du kbdi
+    # Calculate the KBDI
     """
-    Le Keetch-Byram Drought Index (KBDI) est un indice utilisé principalement pour évaluer le risque de feu de forêt 
-    en se basant sur la quantité d'humidité présente dans le sol. L'indice varie typiquement de 0 (sol saturé) à 800 
-    (conditions extrêmement sèches).
+    The Keetch-Byram Drought Index (KBDI) is primarily used to evaluate wildfire risk based on the amount of
+    moisture present in the soil. The index typically ranges from 0 (saturated soil) to 800 (extremely dry
+    conditions).
     """
     dg = meteostat.Hourly(location, 
                           dt.datetime(date_debut.year, 1, 1), 
@@ -351,12 +344,11 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
 
     df['kbdi'] = kbdi
 
-    # Calcul de l'indice Angstroem
+    # Calculate the Angstroem index
     '''
-    Indice météorologique qui a été principalement utilisé pour estimer la probabilité et l'intensité des 
-    incendies de forêt. Cet indice se concentre sur deux variables météorologiques principales : la précipitation 
-    et l'humidité relative. Il a été conçu pour fournir une estimation rapide du potentiel d'incendie basé sur l'état 
-    de sécheresse de la végétation et les conditions atmosphériques.
+    A meteorological index primarily used to estimate the probability and intensity of wildfires. It focuses on
+    two key weather variables: precipitation and relative humidity. The index provides a quick estimate of fire
+    potential based on vegetation dryness and atmospheric conditions.
     '''
     angstroem = np.empty_like(temps)
     angstroem[0] = 0
@@ -453,7 +445,7 @@ def construct_historical_meteo(start, end, region, dir_meteostat, departement):
 
 def check_and_create_path(path: Path):
     """
-    Creer un dossier s'il n'existe pas
+    Create a directory if it does not already exist.
     """
     path_way = path.parent if path.is_file() else path
 
@@ -697,25 +689,25 @@ valeurs_foret_attribut = {
 
 def arrondir_avec_seuil(array, seuil):
     """
-    Arrondit les éléments d'un tableau NumPy en fonction d'un seuil décimal.
-    Si la partie décimale est supérieure ou égale au seuil, l'élément est arrondi au supérieur.
-    Sinon, il est arrondi à l'inférieur.
+    Round the elements of a NumPy array according to a decimal threshold.
+    If the decimal part is greater than or equal to the threshold, the element is rounded up.
+    Otherwise, it is rounded down.
 
-    :param array: Le tableau NumPy à arrondir.
-    :param seuil: Le seuil décimal pour l'arrondi (entre 0 et 1).
-    :return: Le tableau NumPy arrondi en fonction du seuil.
+    :param array: The NumPy array to round.
+    :param seuil: The decimal threshold for rounding (between 0 and 1).
+    :return: The NumPy array rounded according to the threshold.
     """
-    # Séparer la partie entière et la partie décimale
+    # Separate the integer and decimal parts
     partie_entière = np.floor(array)
     partie_décimale = array - partie_entière
 
-    # Condition pour arrondir au supérieur
+    # Condition to round up
     arrondir_au_sup = partie_décimale >= seuil
 
-    # Ajouter 1 à la partie entière là où on doit arrondir au supérieur
+    # Add 1 to the integer part where values must be rounded up
     partie_entière[arrondir_au_sup] += 1
 
-    # Retourner la partie entière comme résultat arrondi
+    # Return the integer part as the rounded result
     return partie_entière
 
 def raster_foret(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, dept):
@@ -808,10 +800,10 @@ def rasterisation(h3, lats, longs, column='cluster', defval = 0, name='default',
     input_geojson = dir_output + '/' + name+'.geojson'
     output_raster = dir_output + '/' + name+'.tif'
 
-    # Si on veut rasteriser en fonction de la valeur d'un attribut du vecteur, mettre son nom ici 
+    # If rasterizing based on a vector attribute, provide its name here
     attribute_name = column
 
-    # Taille des pixels
+    # Pixel size
     if isinstance(lats, float):
         pixel_size_y = lats
         pixel_size_x = longs
@@ -825,13 +817,13 @@ def rasterisation(h3, lats, longs, column='cluster', defval = 0, name='default',
     source_ds = ogr.Open(input_geojson)
     source_layer = source_ds.GetLayer()
 
-    # On obtient l'étendue du raster
+    # Retrieve the raster extent
     x_min, x_max, y_min, y_max = source_layer.GetExtent()
-    # On calcule le nombre de pixels
+    # Compute the number of pixels
     width = int((x_max - x_min) / pixel_size_x)
     height = int((y_max - y_min) / pixel_size_y)
 
-    # Oncrée un nouveau raster dataset et on passe de "coordonnées image" (pixels) à des coordonnées goréférencées
+    # Create a new raster dataset and convert from image coordinates (pixels) to georeferenced coordinates
     driver = gdal.GetDriverByName('GTiff')
     output_ds = driver.Create(output_raster, width, height, 1, gdal.GDT_Float32)
     output_ds.GetRasterBand(1).Fill(defval)
@@ -839,10 +831,10 @@ def rasterisation(h3, lats, longs, column='cluster', defval = 0, name='default',
     output_ds.SetProjection(source_layer.GetSpatialRef().ExportToWkt())
 
     if attribute_name != '' :
-        # On  rasterise en fonction de l'attribut donné
+        # Rasterize according to the given attribute
         gdal.RasterizeLayer(output_ds, [1], source_layer, options=["ATTRIBUTE=" + attribute_name])
     else :
-        # On  rasterise. Le raster prend la valeur 1 là où il y a un vecteur
+        # Rasterize so the raster takes the value 1 wherever a vector is present
         gdal.RasterizeLayer(output_ds, [1], source_layer)
 
     output_ds = None
@@ -857,38 +849,38 @@ def rasterisation(h3, lats, longs, column='cluster', defval = 0, name='default',
 
 def reclass_corine_by_index(array):
     """
-    Reclasse un raster CORINE à base d'indices (1 à 44) vers 10 classes logiques.
-    Le mapping est basé sur la position des indices dans l'ordre CORINE officiel.
+    Reclassify a CORINE raster that uses indices (1 to 44) into 10 logical classes.
+    The mapping is based on the position of the indices in the official CORINE order.
 
-    Entrée :
-        array : np.ndarray contenant les indices de 1 à 44 (ex : [1, 2, ..., 44])
-    
-    Sortie :
-        np.ndarray avec valeurs de 1 à 10 représentant les classes logiques
+    Input:
+        array : np.ndarray containing indices from 1 to 44 (e.g., [1, 2, ..., 44])
+
+    Output:
+        np.ndarray with values from 1 to 10 representing the logical classes
     """
 
-    # Table des 10 classes (indexé de 0 à 43 → 44 valeurs)
-    # Cette table correspond à l'ordre des indices dans ton raster
+    # Lookup table for the 10 classes (indexed from 0 to 43 → 44 values)
+    # This table corresponds to the order of the indices in the raster
     mapping_10_classes = np.array([
-        1, 1, 1, 1, 1, 1,        # 1–6 urbain
-        2, 2, 1, 1,              # 7–10 (transport, ZI, urbain diffus)
+        1, 1, 1, 1, 1, 1,        # 1–6 urban
+        2, 2, 1, 1,              # 7–10 (transport, industrial areas, diffuse urban)
         3, 3, 3, 3, 3, 3, 3,     # 11–17 agriculture
-        4,                      # 18 prairie
+        4,                      # 18 grassland
         3, 3, 3, 3,              # 19–22 agriculture
-        5, 5, 5,                # 23–25 forêts
-        6, 6, 6, 6,             # 26–29 végétation naturelle
-        10, 10, 10, 10, 10,     # 30–34 roche, minéral, etc.
-        7, 7,                  # 35–36 zones humides
-        9, 9, 9,               # 37–39 littoral
-        8, 8,                  # 40–41 plans d’eau
-        10, 10, 10             # 42–44 surfaces peu végétalisées / neige
+        5, 5, 5,                # 23–25 forests
+        6, 6, 6, 6,             # 26–29 natural vegetation
+        10, 10, 10, 10, 10,     # 30–34 rock, mineral, etc.
+        7, 7,                  # 35–36 wetlands
+        9, 9, 9,               # 37–39 coastline
+        8, 8,                  # 40–41 water bodies
+        10, 10, 10             # 42–44 sparsely vegetated areas / snow
     ])
 
-    # Préparer un tableau LUT de 256 pour supporter tout uint8
+    # Prepare a LUT array of size 256 to support any uint8 value
     lut = np.zeros(256, dtype=np.uint8)
-    lut[1:45] = mapping_10_classes  # les indices valides sont 1–44
+    lut[1:45] = mapping_10_classes  # valid indices range from 1 to 44
 
-    # Remplace les valeurs invalides (-128 ou 0) par 0
+    # Replace invalid values (-128 or 0) with 0
     array_clean = np.where((array >= 1) & (array <= 44), array, 0)
     reclassified = lut[array_clean]
 
@@ -896,7 +888,7 @@ def reclass_corine_by_index(array):
 
 def load_shp_from_dir(subpath):
     gdfs = []
-    # Parcours de tous les fichiers .shp
+    # Iterate over all .shp files
     shp_files = chain(
     subpath.glob("*.shp"),
     subpath.glob("*.SHP")
@@ -907,23 +899,23 @@ def load_shp_from_dir(subpath):
             gdf = gpd.read_file(shp_file)
             gdfs.append(gdf)
         except Exception as e:
-            print(f"Erreur lors de la lecture de {shp_file.name}: {e}")
+            print(f"Error while reading {shp_file.name}: {e}")
 
-    # Concaténation finale
+    # Final concatenation
     if gdfs:
         gdf_concat = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True), crs=gdfs[0].crs)
     else:
-        print("Aucun shapefile trouvé ou tous les fichiers ont échoué à la lecture.")
+        print("No shapefile found or all files failed to read.")
 
     return gdf_concat
 
 def raster_corine(geo, dir_output, file_subpath, tifFile, tifFile_high):
     """
-    Pour chaque TIFF dans dir_france :
-      - masque selon la géométrie 'geo'
-      - reprojette à la résolution donnée
-      - convertit chaque pixel en couleur RGB (i, i, i)
-      - exporte le résultat comme GIF couleur
+    For each TIFF in ``dir_france``:
+      - mask according to the ``geo`` geometry
+      - reproject to the given resolution
+      - convert each pixel to an RGB color (i, i, i)
+      - export the result as a color GIF
     """
     dir_output = Path(dir_output)
     dir_output.mkdir(parents=True, exist_ok=True)
@@ -939,34 +931,32 @@ def raster_corine(geo, dir_output, file_subpath, tifFile, tifFile_high):
     
     with rasterio.open(file_subpath) as src:
         src_crs = src.crs
-        target_crs = "EPSG:4326"  # CRS géographique (degrés)
+        target_crs = "EPSG:4326"  # Geographic CRS (degrees)
 
-        # Reprojeter la géométrie dans le bon CRS
+        # Reproject the geometry into the appropriate CRS
         if geo.crs != src_crs:
             geo_proj = geo.to_crs(src_crs)
         else:
             geo_proj = geo
-        
-        #src_bounds = src_bounds.to_crs(src_crs)
-        
+
         polygons = unary_union(geo_proj.geometry)
-        # Masquage spatial
+        # Spatial masking
         out_image, out_transform = mask(src, [polygons], crop=True, nodata=0)
-        
-        # Calcul de la résolution cible
+
+        # Compute the target resolution
         dst_transform, width, height = calculate_default_transform(
             src.crs, target_crs,
             out_image.shape[1], out_image.shape[0],
             *polygons.bounds,
             dst_width=width, dst_height=height,
-            #resolution=(reslon, reslat)  # ICI en degrés
+            #resolution=(reslon, reslat)  # in degrees
         )
-        
-        # Destination reprojetée (1 bande attendue)
+
+        # Reprojected destination (expecting 1 band)
         dst_array = np.empty((1, height, width), dtype=np.float32)
-        
+
         reproject(
-            source=out_image,  # on suppose 1 bande représentant les classes
+            source=out_image,  # assume a single band representing the classes
             destination=dst_array[0],
             src_transform=out_transform,
             src_crs=src_crs,
@@ -975,7 +965,7 @@ def raster_corine(geo, dir_output, file_subpath, tifFile, tifFile_high):
             resampling=Resampling.nearest
         )
 
-        # Reclassification 1–44 → 1–10
+        # Reclassify 1–44 → 1–10
         classified = reclass_corine_by_index(dst_array[0].astype(np.uint8))
 
         for node in unodes:
@@ -1020,31 +1010,31 @@ def raster_route(dir_output, tifFile, tifFile_high, reslon, reslat, file_path, f
     osmnx = load_shp_from_dir(file_path)
     osmnx = osmnx[osmnx['NB_VOIES'].isin(['2 voies larges', '3 voies', '4 voies', 'Plus de 4 voies'])].copy()
 
-    osmnx['label'] = 1  # utile uniquement pour rasterisation ultérieure
+    osmnx['label'] = 1  # useful only for subsequent rasterization
     print(f"Lignes routières filtrées : {osmnx.shape}")
     
-    # Harmoniser CRS
+    # Harmonize the CRS
     if osmnx.crs != france.crs:
         france = france.to_crs(osmnx.crs)
 
-    # -- SPATIAL JOIN : marquer les polygones qui intersectent au moins une route --
+    # -- SPATIAL JOIN: mark polygons that intersect at least one road --
     france = france.copy()
-    france['label'] = 0  # initialisation
+    france['label'] = 0  # initialization
 
-    # Utiliser sjoin pour récupérer les intersections
+    # Use sjoin to retrieve intersections
     intersections = gpd.sjoin(france, osmnx, how='left', predicate='intersects')
 
-    # Récupérer les index de polygones qui intersectent des lignes
+    # Retrieve the polygon indices that intersect lines
     matched_idx = intersections[~intersections.index_right.isna()].index.unique()
 
-    # Mettre leur label à 1
+    # Set their label to 1
     france.loc[matched_idx, 'label'] = 1
     
     france = france.to_crs("EPSG:4326")
 
     print(f"Polygones labellisés : {france['label'].sum()} sur {len(france)}")
 
-    # Rasterisation sur les polygones maintenant labellisés
+    # Rasterize the polygons now labeled
     image = rasterisation(france, reslat, reslon, 'label', dir_output=dir_output, name='route')
 
     for node in unodes:
