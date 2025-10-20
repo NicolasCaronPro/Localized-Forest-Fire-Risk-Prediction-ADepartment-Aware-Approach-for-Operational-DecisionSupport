@@ -104,11 +104,10 @@ class GenerateDatabase():
         
         raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
 
-        file_path = [
-                 'ROUTE500_2-1__SHP_LAMB93_FXX_2018-04-09/ROUTE500/1_DONNEES_LIVRAISON_2021-05-00012/R500_2-1_SHP_LAMB93_FXX-ED181/RESEAU_ROUTIER']
+        file_path = Path('/media/caron/X9 Pro/travaille/Thèse/csv/france/data') / 'BDROUTE' / 'ROUTE500_2-1__SHP_LAMB93_FXX_2018-04-09/ROUTE500/1_DONNEES_LIVRAISON_2021-05-00012/R500_2-1_SHP_LAMB93_FXX-ED181/RESEAU_ROUTIER'
         
-        raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
-
+        raster_route(self.dir_raster, self.h3tif, self.h3tif_high, self.resLon_high, self.resLat_high, file_path, self.h3)
+        
         if not (self.spatialParams['dir'] / 'population' / 'population.csv').is_file():
             download_population(Path('/path_to_database/csv/france/data/population'), self.region, self.spatialParams['dir'] / 'population')
         raster_population(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon, self.resLat, self.spatialParams['dir'])
