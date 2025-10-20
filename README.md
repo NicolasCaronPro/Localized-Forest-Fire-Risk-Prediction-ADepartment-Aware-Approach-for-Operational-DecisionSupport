@@ -82,6 +82,7 @@ Contains the figures, tables and the full list of variables used to train the mo
 
 You may find additionnal files on google drive https://drive.google.com/drive/folders/1iCM5ew1F8cmmgkd42jWUQ6A9rZgTZ6cT?usp=sharing, notably
 * `hexagones_france.gpkg`
+* `firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
 
 Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
 
