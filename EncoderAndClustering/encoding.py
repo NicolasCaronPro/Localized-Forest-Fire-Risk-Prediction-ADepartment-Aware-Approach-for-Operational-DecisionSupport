@@ -255,7 +255,7 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
     '976': 'Mayotte',
     }
 
-    allDates = find_dates_between('2017-06-12', '2023-12-31')
+    allDates = find_dates_between('2017-06-12', '2024-12-31')
     print(f'Create encoder for categorical features using {train_departements}, at expe {expe}')
     stop_calendar = 11
     
