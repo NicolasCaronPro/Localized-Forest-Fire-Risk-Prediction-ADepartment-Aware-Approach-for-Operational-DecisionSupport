@@ -43,18 +43,6 @@ class GenerateDatabase():
         self.compute_spatial_features = compute_spatial_features
         self.spatialParams = spatialParams
 
-        self.compute_air_features = compute_air_features
-        self.airParams = airParams
-
-        self.compute_trafic_features = compute_trafic_features
-        self.bouchonParams = bouchonParams
-
-        self.compute_vigicrues_features = compute_vigicrues_features
-        self.vigicrueParams = vigicrueParams
-
-        self.compute_nappes_features = compute_nappes_features
-        self.nappesParams = nappesParams
-
         self.dir_raster = dir_raster
 
         self.region = region
