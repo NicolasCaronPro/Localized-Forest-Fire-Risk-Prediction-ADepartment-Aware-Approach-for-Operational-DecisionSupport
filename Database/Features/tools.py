@@ -156,20 +156,6 @@ def compute_fire_indices(point, date_debut, date_fin, saison_feux):
         dsr[i] = dsr[i - 1] + 1 if prec24h12s[i] < treshPrec24 else 0
     df['days_since_rain'] = dsr
 
-    """if not saison_feux: # -> not happy because I do not want to shrink my dataset, but we will see later
-        df['dc'] = 0
-        df['ffmc'] = 0
-        df['dmc'] = 0
-        df['isi'] = 0
-        df['bui'] = 0
-        df['fwi'] = 0
-        df['daily_severity_rating'] = 0
-        df['nesterov'] = 0
-        df['munger'] = 0
-        df['kbdi'] = 0
-        df['angstroem'] = 0
-        return df"""
-
     # Calculate the DC using numpy
     '''
     The Drought Code (DC) is part of the Canadian Forest Fire Weather Index (FWI) System, a comprehensive
@@ -997,45 +983,41 @@ def raster_corine(geo, dir_output, file_subpath, tifFile, tifFile_high):
     f = open(dir_output / outputName,"wb")
     pickle.dump(res2,f)
 
-def raster_route(dir_output, tifFile, tifFile_high, reslon, reslat, file_path, france):
+def raster_route(dir_output, tifFile, tifFile_high, reslon, reslat, file_path, geo):
     
-    res = np.empty(tifFile.shape)
-    res2 = np.copy(res)
-    res3 = np.copy(res2)
-
+    
     unodes = np.unique(tifFile[~np.isnan(tifFile)])
 
-    bands = [0]
-
+    bands = [0, 1]
     osmnx = load_shp_from_dir(file_path)
     osmnx = osmnx[osmnx['NB_VOIES'].isin(['2 voies larges', '3 voies', '4 voies', 'Plus de 4 voies'])].copy()
-
-    osmnx['label'] = 1  # useful only for subsequent rasterization
-    print(f"Lignes routières filtrées : {osmnx.shape}")
     
-    # Harmonize the CRS
-    if osmnx.crs != france.crs:
-        france = france.to_crs(osmnx.crs)
+    res = np.empty((len(bands), *tifFile.shape))
+    res2 = np.empty(tifFile.shape)
+    
+    osmnx['label'] = 1  # utile uniquement pour rasterisation ultérieure
+    
+    # Harmoniser CRS
+    if osmnx.crs != geo.crs:
+        geo = geo.to_crs(osmnx.crs)
 
-    # -- SPATIAL JOIN: mark polygons that intersect at least one road --
-    france = france.copy()
-    france['label'] = 0  # initialization
+    # -- SPATIAL JOIN : marquer les polygones qui intersectent au moins une route --
+    geo = geo.copy()
+    geo['label'] = 0  # initialisation
 
-    # Use sjoin to retrieve intersections
-    intersections = gpd.sjoin(france, osmnx, how='left', predicate='intersects')
+    # Utiliser sjoin pour récupérer les intersections
+    intersections = gpd.sjoin(geo, osmnx, how='left', predicate='intersects')
 
-    # Retrieve the polygon indices that intersect lines
+    # Récupérer les index de polygones qui intersectent des lignes
     matched_idx = intersections[~intersections.index_right.isna()].index.unique()
 
-    # Set their label to 1
-    france.loc[matched_idx, 'label'] = 1
+    # Mettre leur label à 1
+    geo.loc[matched_idx, 'label'] = 1
     
-    france = france.to_crs("EPSG:4326")
+    geo = geo.to_crs("EPSG:4326")
 
-    print(f"Polygones labellisés : {france['label'].sum()} sur {len(france)}")
-
-    # Rasterize the polygons now labeled
-    image = rasterisation(france, reslat, reslon, 'label', dir_output=dir_output, name='route')
+    # Rasterisation sur les polygones maintenant labellisés
+    image = rasterisation(geo, reslat, reslon, 'label', dir_output=dir_output.as_posix(), name='route')
 
     for node in unodes:
         if node not in tifFile_high:
@@ -1048,20 +1030,24 @@ def raster_route(dir_output, tifFile, tifFile_high, reslon, reslat, file_path, f
             res[band, mask1] = (np.argwhere(image[mask2] == band).shape[0] / image[mask2].shape[0]) * 100
         try:
             if res[:, mask1].shape[1] == 1:
-                res2[mask1] = np.nanargmax(res[:, mask1])
+                res2[mask1] = 1
             else:
                 res2[mask1] = np.nanargmax(res[:, mask1][:,0])
-        except:
+        except Exception as e:
+            print(e)
             continue
         
+    plt.imshow(res)
+    plt.show()
+    exit(1)
+    
     res[:, np.isnan(tifFile)] = np.nan
     res2[np.isnan(tifFile)] = np.nan
-    res3[:, np.isnan(tifFile)] = np.nan
     
     outputName = 'route.pkl'
     f = open(dir_output / outputName,"wb")
     pickle.dump(res,f)
-
+    
     outputName = 'route_landcover.pkl'
     f = open(dir_output / outputName,"wb")
     pickle.dump(res2,f)
@@ -1071,7 +1057,6 @@ def read_object(filename: str, path : Path):
         print(f'{path / filename} not found')
         return None
     return pickle.load(open(path / filename, 'rb'))
-
 
 ############################### Raster loaders #################################
 
