@@ -99,6 +99,15 @@ class GenerateDatabase():
         raster_sat_from_france(self.h3tif, self.h3, self.dir_raster, Path('path_to_database') / 'csv' / 'france' / 'data' / 'GEE' / resolution, self.dates) # To download the original sat images, you will need a Google Earth Engine account
 
         # Add corine and bdroute
+        # donwload file here https://land.copernicus.eu/en/products/corine-land-cover/clc2018
+        file_subpath = Path('path_to_database/csv/france/data') / 'CORINE' / '197475/Results/U2006_CLC2018_V2020_20u1/U2006_CLC2000_V2020_20u1/U2006_CLC2018_V2020_20u1.tif'
+        
+        raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
+
+        file_path = [
+                 'ROUTE500_2-1__SHP_LAMB93_FXX_2018-04-09/ROUTE500/1_DONNEES_LIVRAISON_2021-05-00012/R500_2-1_SHP_LAMB93_FXX-ED181/RESEAU_ROUTIER']
+        
+        raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
 
         if not (self.spatialParams['dir'] / 'population' / 'population.csv').is_file():
             download_population(Path('/path_to_database/csv/france/data/population'), self.region, self.spatialParams['dir'] / 'population')
