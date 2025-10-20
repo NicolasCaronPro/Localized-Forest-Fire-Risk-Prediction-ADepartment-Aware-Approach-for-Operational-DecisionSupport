@@ -159,9 +159,6 @@ class GenerateDatabase():
                 '0.5x0.5' : {'x' : 0.00718803910293272,'y' : 0.005180273518441774},
                 '0.03x0.03' : {'x' : 0.0002694945852326214,'y' :  0.0002694945852352859}}
         
-        #n_pixel_x = 0.016133099692723363
-        #n_pixel_y = 0.016133099692723363
-
         n_pixel_x = resolutions[resolution]['x']
         n_pixel_y = resolutions[resolution]['y']
         
