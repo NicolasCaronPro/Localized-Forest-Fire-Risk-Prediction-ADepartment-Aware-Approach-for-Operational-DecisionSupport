@@ -28,7 +28,6 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
   * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat from Google Earth Engine, including cloud masking and index computation steps.
   * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
-  * Features have been aggregated by departments (average, maximum, and minimum) (code in progress)
  
 * **Automation**
 
