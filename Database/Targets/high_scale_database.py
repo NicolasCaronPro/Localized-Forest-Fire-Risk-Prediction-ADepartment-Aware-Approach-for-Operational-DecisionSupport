@@ -196,48 +196,12 @@ if __name__ == "__main__":
         output_dataset = dataset_name
 
     ###################################### Data loading ###################################
-    #root = Path('/home/caron/Bureau/csv')
     root = Path('path_to_database')
     dir_output = Path(+sinister+'/'+output_dataset + '/' + sinister_encoding)
 
-    """if dataset_name == 'firemen':
-        spa = 3
-        if sinister == "firepoint":
-            departements = ['departement-01-ain',
-                            'departement-25-doubs',
-                            'departement-69-rhone', 
-                            'departement-78-yvelines',
-                            ]
-            pass
-        elif sinister == "inondation":
-            #departements = ['departement-25-doubs']
-            pass
-    elif dataset_name == 'vigicrues':
-        spa = 3
-        if sinister == 'firepoint':
-            exit(1)
-        elif sinister == 'inondation':
-            departements = ['departement-01-ain']
-    elif dataset_name == 'bdiff':
-        if sinister != 'firepoint':
-            exit(1)
-        spa = 3
-        departements = [f'departement-{dept}' for dept in departements]
-    elif dataset_name == 'georisques':
-        spa = 3
-        departements = [f'departement-{dept}' for dept in departements]
-    else:
-        print(f'Unknow dataset name {dataset_name}')
-        exit(1)"""
-
     departements = [f'departement-{dept}' for dept in departements]
     spa = 3
-    #regions = gpd.read_file('/home/caron/Bureau/Model/HexagonalScale/ST-GNN-for-wildifre-prediction/Prediction/GNN/regions/regions.geojson')
     regions = []
-
-    #departements = ['departement-04-alpes-de-haute-provence']
-    #departements = ['departement-13-bouches-du-rhone']
-    #departements = ['departement-01-ain']
 
     for i, dept in enumerate(departements):
         if not (root / dept / 'data' / 'spatial/hexagones.geojson').is_file():
@@ -249,7 +213,6 @@ if __name__ == "__main__":
         h3['departement'] = dept
         regions.append(h3)
     
-    #regions = gpd.read_file(root / 'france' / 'data' / 'geo/hexagones_france.gpkg')
     regions = pd.concat(regions).reset_index(drop=True)
     regions['scale0'] = regions.index
     regions.index = regions['hex_id']
@@ -276,9 +239,8 @@ if __name__ == "__main__":
     n_pixel_x = resolutions[resolution]['x']
     n_pixel_y = resolutions[resolution]['y']
 
-    sdate = '2017-06-12'
-    #edate = datetime.datetime.now().date().strftime('%Y-%m-%d')
-    edate = '2024-06-29'
+    sdate = '2017-06-12' # First Date
+    edate = '2024-12-31' # Last Date
     creneaux = find_dates_between(sdate, edate)
     
     ################################## Process #################################
@@ -294,6 +256,3 @@ if __name__ == "__main__":
     fp = pd.concat(fp).reset_index(drop=True)
     check_and_create_path(Path(f'{output_dataset}'))
     fp.to_csv(f'{output_dataset}/{sinister}.csv', index=False)
-
-    #if not doPast:
-    #    remove_0_risk_pixel(dir_output, resolution, departements)
