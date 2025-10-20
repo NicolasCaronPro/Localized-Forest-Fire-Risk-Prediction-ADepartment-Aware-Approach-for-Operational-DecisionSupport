@@ -34,7 +34,7 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
 | Feature        | Automation Description                                                                 |
 |----------------|-----------------------------------------------------------------------------------------|
 | Meteorological | OK   |
-| Landsat       | Need GEE account |
+| Landsat       | Need GEE account (https://earthengine.google.com/) |
 | Landcover      | Need Corine Account  (https://land.copernicus.eu/en/products/corine-land-cover) |
 | Elevation      | In progress    |
 | Population     | OK            |
