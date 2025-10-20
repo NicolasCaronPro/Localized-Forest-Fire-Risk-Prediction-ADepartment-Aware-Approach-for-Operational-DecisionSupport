@@ -293,7 +293,7 @@ if __name__ == '__main__':
     resolution = args.resolution
 
     start = '2017-06-12'
-    stop = '2024-06-29'
+    stop = '2024-12-31'
     
     ################## Ain ######################
     launch('departement-01-ain', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)
