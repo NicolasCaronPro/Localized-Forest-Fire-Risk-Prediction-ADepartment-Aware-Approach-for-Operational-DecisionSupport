@@ -93,8 +93,9 @@ def process_department(departements, sinister, n_pixel_y, n_pixel_x, read):
             continue
 
         # Load data from national datasets and filter by department
-        if dataset_name in ['bdiff', 'vigicrues', 'georisques', 'bdiff_small']:
-            fp = pd.read_csv(root / 'france' / sinister / f'{sinister}.csv', dtype={'Département': str})
+        if dataset_name in ['bdiff']:
+            #fp = pd.read_csv(root / 'france' / sinister / f'{sinister}.csv', dtype={'Département': str})
+            fp = pd.read_csv(root / 'france' / sinister / 'firepoint_to_share.csv', dtype={'Département': str})
             code_dept_str = name2int[dept]
             code_dept_str = f'{code_dept_str:02}'  # Format with leading zero if needed
             fp = fp[fp['Département'] == code_dept_str]

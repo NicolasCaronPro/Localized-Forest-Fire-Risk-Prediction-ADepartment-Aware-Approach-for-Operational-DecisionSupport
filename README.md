@@ -31,11 +31,11 @@ path_to_database/
 │       │   │   ├── population/
 │       │   │   ├── elevation/
 │       │   │   └── BDFORET/
-│       │   └── <optional folders>                # air, vigicrues, nappes… datasets when enabled
+│       │   
 │       └── raster/
-│           ├── 2x2/                              # default low-resolution rasters (latitude.pkl, datacube.pkl, …)
-│           ├── 1x1/
-│           └── 0.5x0.5/
+│           ├── 2x2/                                    # default low-resolution rasters (latitude.pkl, datacube.pkl, …)
+            ├── 0.5x0.5/                                 
+            ├── 1x1/                                   
 └── france/
     └── <sinister>/                               # national incident CSVs (e.g. firepoint/firepoint.csv)
 ```
@@ -72,7 +72,7 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
 | Population     | OK            |
 | Forest cover   | OK |
 | Calendar      | OK              |
-| BDroute      | OK              |
+| BDroute      | In progress              |
 | Fire point      | See Additionnal Files              |
 
 
