@@ -8,6 +8,38 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 
 #### Database
 This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a data cube (xarray) structured by latitude, longitude, and date using the `concat_xarrays` function in the corresponding folders.
+
+**Expected `path_to_database` layout**
+
+```
+path_to_database/
+├── csv/
+│   ├── france/
+│   │   └── data/
+│   │       ├── BDROUTE/                          # national BDROUTE archives
+│   │       ├── CORINE/                           # land-cover rasters
+│   │       ├── GEE/
+│   │       │   └── <resolution>/                 # Google Earth Engine exports per resolution
+│   │       ├── geo/                              # shared geometries (e.g. hexagones_france.gpkg)
+│   │       └── population/                       # Kontur population dataset
+│   └── departement-XX-name/
+│       ├── data/
+│       │   ├── geo/                              # downloaded administrative boundary (geo.geojson)
+│       │   ├── meteostat/                        # meteostat.csv generated per department
+│       │   ├── spatial/
+│       │   │   ├── hexagones.geojson             # H3 grid clipped to the department
+│       │   │   ├── population/
+│       │   │   ├── elevation/
+│       │   │   └── BDFORET/
+│       │   └── <optional folders>                # air, vigicrues, nappes… datasets when enabled
+│       └── raster/
+│           ├── 2x2/                              # default low-resolution rasters (latitude.pkl, datacube.pkl, …)
+│           ├── 1x1/
+│           └── 0.5x0.5/
+└── france/
+    └── <sinister>/                               # national incident CSVs (e.g. firepoint/firepoint.csv)
+```
+
 To compute the features
 ```bash
 python3.9 generate_database.py -m True -t True -s True -r 2x2
@@ -60,6 +92,32 @@ These scripts rely on the pickle files generated during the dataset creation pha
   * `bdiff_plot.png` – example difference plot produced during validation.
   * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
   * Targets have been summed by departments, taking the total number of fires (or burned area) in a day (code in progress)
+
+**Expected `path_to_target` layout**
+
+```
+path_to_target/
+├── <sinister>/                               # e.g. firepoint, vigicrues…
+│   └── <output_dataset>/                     # dataset selected with -d / -od flags (e.g. bdiff)
+│       ├── regions.geojson                    # merged departmental geometries
+│       └── <sinister_encoding>/               # target type from -se flag (occurrence, burned_area…)
+│           ├── bin/
+│           │   ├── 2x2/                      # resolution folders containing <dept>binScale0.pkl
+│           │   └── <other resolutions>/
+│           ├── mask/
+│           │   ├── geo/
+│           │   │   └── 2x2/
+│           │   └── tif/
+│           │       └── 2x2/
+│           ├── raster/
+│           │   └── 2x2/
+│           └── datacube/
+│               └── departement-XX-name/
+│                   └── 2x2/
+│                       └── datacube.pkl
+└── <output_dataset>/
+    └── <sinister>.csv                         # consolidated national incidents exported per dataset
+```
 
 #### Models
 This folder implements the machine learning models and evaluation metrics used in the article.
