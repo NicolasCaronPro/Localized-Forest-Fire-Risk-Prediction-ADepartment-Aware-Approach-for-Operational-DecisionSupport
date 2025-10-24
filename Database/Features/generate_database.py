@@ -24,10 +24,6 @@ class GenerateDatabase():
                  compute_meteostat_features, meteostatParams,
                  compute_temporal_features, outputParams,
                  compute_spatial_features, spatialParams,
-                 compute_air_features, airParams,
-                 compute_trafic_features, bouchonParams,
-                 compute_vigicrues_features, vigicrueParams,
-                 compute_nappes_features, nappesParams,
                  region, h3,
                  dir_raster
                  ):
