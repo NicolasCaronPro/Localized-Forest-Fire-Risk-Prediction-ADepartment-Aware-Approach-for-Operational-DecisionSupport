@@ -45,6 +45,12 @@ To compute the features
 python3.9 generate_database.py -m True -t True -s True -r 2x2
 ```
 
+To compute the target for fire occurrence
+```bash
+python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
+python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se burned_area -od bdiff
+```
+
 **Created `path_to_target` layout**
 
 ```
@@ -67,13 +73,6 @@ path_to_target/
 │               └── departement-XX-name/
 │                   └── 2x2/
 │                       └── datacube.pkl # Datacube with firepoints and features
-```
-
-
-To compute the target for fire occurrence
-```bash
-python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
-python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se burned_area -od bdiff
 ```
 
 **Contents**
