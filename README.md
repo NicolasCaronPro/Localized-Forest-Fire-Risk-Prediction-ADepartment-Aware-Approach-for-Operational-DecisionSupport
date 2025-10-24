@@ -45,6 +45,33 @@ To compute the features
 python3.9 generate_database.py -m True -t True -s True -r 2x2
 ```
 
+**Expected `path_to_target` layout**
+
+```
+path_to_target/
+├── <sinister>/                               # e.g. firepoint, vigicrues…
+│   └── <output_dataset>/                     # dataset selected with -d / -od flags (e.g. bdiff)
+│       ├── regions.geojson                    # merged departmental geometries
+│       └── <sinister_encoding>/               # target type from -se flag (occurrence, burned_area…)
+│           ├── bin/
+│           │   ├── 2x2/                      # resolution folders containing <dept>binScale0.pkl
+│           │   └── <other resolutions>/
+│           ├── mask/
+│           │   ├── geo/
+│           │   │   └── 2x2/
+│           │   └── tif/
+│           │       └── 2x2/
+│           ├── raster/
+│           │   └── 2x2/
+│           └── datacube/
+│               └── departement-XX-name/
+│                   └── 2x2/
+│                       └── datacube.pkl
+└── <output_dataset>/
+    └── <sinister>.csv                         # consolidated national incidents exported per dataset
+```
+
+
 To compute the target for fire occurrence
 ```bash
 python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
