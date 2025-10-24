@@ -45,7 +45,7 @@ To compute the features
 python3.9 generate_database.py -m True -t True -s True -r 2x2
 ```
 
-**Expected `path_to_target` layout**
+**Created `path_to_target` layout**
 
 ```
 path_to_target/
