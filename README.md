@@ -73,6 +73,7 @@ path_to_target/
 To compute the target for fire occurrence
 ```bash
 python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
+python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se burned_area -od bdiff
 ```
 
 **Contents**
