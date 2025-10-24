@@ -37,7 +37,7 @@ path_to_database/
             ├── 0.5x0.5/                                 
             ├── 1x1/                                   
 └── france/
-    └── <sinister>/                               # national incident CSVs (e.g. firepoint/firepoint.csv)
+    └── firepoint/firepoint_to_share.csv                               # national incident CSVs (e.g. firepoint/firepoint.csv)
 ```
 
 To compute the features
@@ -49,7 +49,7 @@ python3.9 generate_database.py -m True -t True -s True -r 2x2
 
 ```
 path_to_target/
-├── <sinister>/                               # e.g. firepoint, vigicrues…
+├── <firepoint>/                               # e.g. firepoint, vigicrues…
 │   └── <output_dataset>/                     # dataset selected with -d / -od flags (e.g. bdiff)
 │       ├── regions.geojson                    # merged departmental geometries
 │       └── <sinister_encoding>/               # target type from -se flag (occurrence, burned_area…)
@@ -66,9 +66,7 @@ path_to_target/
 │           └── datacube/
 │               └── departement-XX-name/
 │                   └── 2x2/
-│                       └── datacube.pkl
-└── <output_dataset>/
-    └── <sinister>.csv                         # consolidated national incidents exported per dataset
+│                       └── datacube.pkl # Datacube with firepoints and features
 ```
 
 
