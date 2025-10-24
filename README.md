@@ -34,8 +34,6 @@ path_to_database/
 │       │   └── <optional folders>                # air, vigicrues, nappes… datasets when enabled
 │       └── raster/
 │           ├── 2x2/                              # default low-resolution rasters (latitude.pkl, datacube.pkl, …)
-│           ├── 1x1/
-│           └── 0.5x0.5/
 └── france/
     └── <sinister>/                               # national incident CSVs (e.g. firepoint/firepoint.csv)
 ```
