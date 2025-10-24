@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
     ###################################### Data loading ###################################
     root = Path('path_to_database')
-    dir_output = Path(+sinister+'/'+output_dataset + '/' + sinister_encoding)
+    dir_output = Path('path_to_target/'+sinister+'/'+output_dataset + '/' + sinister_encoding)
 
     departements = [f'departement-{dept}' for dept in departements]
     spa = 3
@@ -251,8 +251,8 @@ if __name__ == "__main__":
     
     for dept in departements:
         # Merge all departmental rasters into a single xarray
-        concat_xarrays(Path('/media/caron/X9 Pro1/travaille/Thèse/Model/HexagonalScale/ST-GNN-for-wildifre-prediction/Prediction/Target/'+sinister+'/'+output_dataset + '/'),
-                       allDates, dept, Path('/media/caron/X9 Pro1/travaille/Thèse/csv'), resolution)
+        concat_xarrays(Path('path_to_target/Target/'+sinister+'/'+output_dataset + '/'),
+                       allDates, dept, Path('path_to_database/csv'), resolution)
 
     fp = pd.concat(fp).reset_index(drop=True)
     check_and_create_path(Path(f'{output_dataset}'))
