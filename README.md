@@ -84,6 +84,7 @@ path_to_target/
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
   * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat from Google Earth Engine, including cloud masking and index computation steps.
+  * `requirements.txt` – Python dependencies required to run the scripts.
   * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
  
 * **Automation**
@@ -107,7 +108,8 @@ These scripts rely on the pickle files generated during the dataset creation pha
 
 * `encoding.py` – prepares and encodes the variables and saves the results as pickle files. Modify `path_to_raster` to your own architecture
 * `time_series_clustering.py` – groups time series using the encoded data. Modify `path_to_target` to your own architecture
-* `main.py` - launcg encoding and clustering. 
+* `main.py` - launcg encoding and clustering.
+* `requirements.txt` – Python dependencies required to run the scripts.
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We used data between 2017-06-12 and 2024-12-31.
@@ -117,7 +119,8 @@ These scripts rely on the pickle files generated during the dataset creation pha
   * `check.ipynb` – notebook validating the target creation process.
   * `bdiff_plot.png` – example difference plot produced during validation.
   * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
-  * Targets have been summed by departments, taking the total number of fires (or burned area) in a day (code in progress)
+  * `requirements.txt` – Python dependencies required to run the scripts.
+  * In the proposed article, targets have been summed by departments, taking the total number of fires (or burned area) in a day (code in progress)
 
 #### Models
 This folder implements the machine learning models and evaluation metrics used in the article.
@@ -129,10 +132,6 @@ This folder implements the machine learning models and evaluation metrics used i
   
 ### supplementary_materials.pdf
 Contains the figures, tables and the full list of variables used to train the models.
-
-### Root files
-
-* `requirements.txt` – Python dependencies required to run the scripts. (need fix)
 
 ### Additionnal files
 
