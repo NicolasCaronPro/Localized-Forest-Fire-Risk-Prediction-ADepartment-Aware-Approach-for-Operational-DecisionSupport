@@ -106,7 +106,7 @@ path_to_target/
 This folder gathers utilities to encode categorical features and cluster time series.
 These scripts rely on the pickle files generated during the dataset creation phase.
 
-* `encoding.py` – prepares and encodes the variables and saves the results as pickle files. Modify `path_to_raster` to your own architecture
+* `encoding.py` – prepares and encodes the variables and saves the results as pickle files. Modify `path_to_raster` to your own architecture. You can use either `encode` with the pickle files or `encode_from_xarray` with the datacubes.
 * `time_series_clustering.py` – groups time series using the encoded data. Modify `path_to_target` to your own architecture
 * `main.py` - launcg encoding and clustering.
 * `requirements.txt` – Python dependencies required to run the scripts.
