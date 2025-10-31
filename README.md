@@ -93,7 +93,7 @@ path_to_target/
 | Meteorological | OK   |
 | Landsat       | Need GEE account (https://earthengine.google.com/) |
 | Landcover      | Need Corine Account  (https://land.copernicus.eu/en/products/corine-land-cover) |
-| Elevation      | In progress    |
+| Elevation      | OK (use files in drive)    |
 | Population     | OK            |
 | Forest cover   | OK |
 | Calendar      | OK              |
