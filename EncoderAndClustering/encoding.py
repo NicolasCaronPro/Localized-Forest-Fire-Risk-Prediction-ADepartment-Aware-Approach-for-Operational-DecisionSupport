@@ -139,7 +139,7 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
 
     Args:
         path_to_target (Path): directory of the target features computed in Target section
-        trainDates (list): List of training dates
+        trainDates (list): List of index training dates (allDates.index(date)
         expe (str): suffix of the experiment (Specify what you want) 
         train_departements (list):  List of training departments
         dir_output (Path): Output directory
