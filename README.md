@@ -132,7 +132,7 @@ Contains the figures, tables and the full list of variables used to train the mo
 
 ### Root files
 
-* `requirements.txt` – Python dependencies required to run the scripts. (need fix)
+* `requirements.txt` – Python dependencies required to run the scripts.
 
 ### Additionnal files
 
