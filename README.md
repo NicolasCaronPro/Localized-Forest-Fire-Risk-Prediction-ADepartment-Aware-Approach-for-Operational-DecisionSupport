@@ -105,8 +105,9 @@ path_to_target/
 This folder gathers utilities to encode categorical features and cluster time series.
 These scripts rely on the pickle files generated during the dataset creation phase.
 
-* `encoding.py` – prepares and encodes the variables and saves the results as pickle files.
-* `time_series_clustering.py` – groups time series using the encoded data.
+* `encoding.py` – prepares and encodes the variables and saves the results as pickle files. Modify `path_to_raster` to your own architecture
+* `time_series_clustering.py` – groups time series using the encoded data. Modify `path_to_target` to your own architecture
+* `main.py` - launcg encoding and clustering. 
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We used data between 2017-06-12 and 2024-12-31.
