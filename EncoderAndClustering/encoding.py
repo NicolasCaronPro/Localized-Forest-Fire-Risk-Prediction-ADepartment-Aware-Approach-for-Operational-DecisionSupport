@@ -148,9 +148,9 @@ def encode(trainDates, expe, train_departements, dir_output):
         
     """
 
-    jours_feries = sum([list(jours_feries_france.JoursFeries.for_year(k).values()) for k in range(2017,2023)],[]) # French Jours fériés, used in features_*.py 
+    jours_feries = sum([list(jours_feries_france.JoursFeries.for_year(k).values()) for k in range(2017,2025)],[]) # French Jours fériés, used in features_*.py 
     veille_jours_feries = sum([[l-dt.timedelta(days=1) for l \
-                in jours_feries_france.JoursFeries.for_year(k).values()] for k in range(2017,2023)],[]) # French Veille Jours fériés, used in features_*.py 
+                in jours_feries_france.JoursFeries.for_year(k).values()] for k in range(2017,2025)],[]) # French Veille Jours fériés, used in features_*.py 
     vacances_scolaire = vacances_scolaires_france.SchoolHolidayDates() # French Holidays used in features_*.py
 
     ACADEMIES = {
@@ -413,8 +413,14 @@ def encode(trainDates, expe, train_departements, dir_output):
     
 def encode_from_xarray(trainDates, expe, train_departements, dir_output):
     check_and_create_path(dir_output)
-    print(f'Create encoder for categorical features using {train_departements}, at expe {expe}')
     
+    jours_feries = sum([list(jours_feries_france.JoursFeries.for_year(k).values()) for k in range(2017,2025)],[]) # French Jours fériés, used in features_*.py 
+    veille_jours_feries = sum([[l-dt.timedelta(days=1) for l \
+                in jours_feries_france.JoursFeries.for_year(k).values()] for k in range(2017,2025)],[]) # French Veille Jours fériés, used in features_*.py 
+    vacances_scolaire = vacances_scolaires_france.SchoolHolidayDates() # French Holidays used in features_*.py
+    
+    allDates = find_dates_between('2017-06-12', '2024-12-31')
+
     trainDate = np.asarray([allDates.index(date) for date in trainDates])
     
     stop_calendar = 11
