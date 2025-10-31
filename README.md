@@ -113,6 +113,7 @@ These scripts rely on the pickle files generated during the dataset creation pha
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We used data between 2017-06-12 and 2024-12-31.
+  * Or use the file availble on Drive
   * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
   * `tools_functions.py` – utility functions used in the probabilistic pipeline.
   * `dico_departements.py` – departments lookup for target generation.
