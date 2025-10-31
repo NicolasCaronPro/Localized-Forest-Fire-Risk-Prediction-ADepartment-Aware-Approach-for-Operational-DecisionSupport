@@ -299,16 +299,10 @@ def encode(path_to_target, trainDates, expe, train_departements, dir_output):
             foret += list(fore[~np.isnan(tar[:,:,0])])
         
         ##################### Road #################
-        os = read_object('osmnx_landcover.pkl', dir_data)
+        os = read_object('route_landcover.pkl', dir_data)
         if os is not None:
             os = resize_no_dim(os, tar.shape[0], tar.shape[1])
             osmnx += list(os[~np.isnan(tar[:,:,0])])
-
-        ##################### Clay Soil #################
-        argile = read_object('argile.pkl', dir_data)
-        if argile is not None:
-            argile = resize_no_dim(argile, tar.shape[0], tar.shape[1])
-            argile_value += list(argile[~np.isnan(tar[:, :, 0])])
 
         ##################### Clustering #################
         dir_clustering = Path(dir_output / '..' /  'time_series_clustering')
