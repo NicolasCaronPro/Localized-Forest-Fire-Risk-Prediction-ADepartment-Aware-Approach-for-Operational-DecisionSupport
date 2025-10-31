@@ -11,13 +11,9 @@ def read_object(filename: str, path : Path):
 
 def cluster_time_series_from_targets(
     departments,
-    target,
     train_dates,
     all_dates,
     drop_departments,
-    root_target,
-    resolution,
-    raster_dir,
     n_clusters=4,
     distance_metric="dtw",
     max_iter=10,
@@ -49,7 +45,7 @@ def cluster_time_series_from_targets(
     assert read_object is not None, "A read_object must be provided to load data."
 
     dir_target_bin = Path('path_to_target')
-    target_per_node = {}
+    target_per_dept = {}
 
     train_dates_id = np.asarray([all_dates.index(date) for date in train_dates])
 
