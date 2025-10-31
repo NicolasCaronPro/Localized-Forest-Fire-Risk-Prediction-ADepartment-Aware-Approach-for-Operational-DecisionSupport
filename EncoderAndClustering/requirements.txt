@@ -1,0 +1,8 @@
+category_encoders==2.6.4
+convertdate==2.4.0
+jours_feries_france==0.7.0
+numpy==2.3.4
+pandas==2.3.3
+skimage==0.0
+tslearn==0.6.4
+vacances_scolaires_france==0.10.0
