@@ -28,9 +28,6 @@ def cluster_time_series_from_targets(
         train_date (str): Cut-off date for training (format: 'YYYY-MM-DD').
         all_dates (list): List of all available dates (strings).
         drop_departments (list): Departments to exclude from processing.
-        root_target (Path): Root directory containing target data.
-        resolution (str): Data resolution folder name.
-        raster_dir (Path): Directory where raster files are stored.
         n_clusters (int): Number of clusters.
         distance_metric (str): Clustering distance metric (e.g., "dtw").
         max_iter (int): Max iterations for clustering.
