@@ -93,8 +93,9 @@ def process_department(departements, sinister, n_pixel_y, n_pixel_x, read):
             continue
 
         # Load data from national datasets and filter by department
-        if dataset_name in ['bdiff', 'vigicrues', 'georisques', 'bdiff_small']:
-            fp = pd.read_csv(root / 'france' / sinister / f'{sinister}.csv', dtype={'Département': str})
+        if dataset_name in ['bdiff']:
+            #fp = pd.read_csv(root / 'france' / sinister / f'{sinister}.csv', dtype={'Département': str})
+            fp = pd.read_csv(root / 'france' / sinister / 'firepoint_to_share.csv', dtype={'Département': str})
             code_dept_str = name2int[dept]
             code_dept_str = f'{code_dept_str:02}'  # Format with leading zero if needed
             fp = fp[fp['Département'] == code_dept_str]
@@ -197,7 +198,7 @@ if __name__ == "__main__":
 
     ###################################### Data loading ###################################
     root = Path('path_to_database')
-    dir_output = Path(+sinister+'/'+output_dataset + '/' + sinister_encoding)
+    dir_output = Path('path_to_target/'+sinister+'/'+output_dataset + '/' + sinister_encoding)
 
     departements = [f'departement-{dept}' for dept in departements]
     spa = 3
@@ -250,8 +251,8 @@ if __name__ == "__main__":
     
     for dept in departements:
         # Merge all departmental rasters into a single xarray
-        concat_xarrays(Path('/media/caron/X9 Pro1/travaille/Thèse/Model/HexagonalScale/ST-GNN-for-wildifre-prediction/Prediction/Target/'+sinister+'/'+output_dataset + '/'),
-                       allDates, dept, Path('/media/caron/X9 Pro1/travaille/Thèse/csv'), resolution)
+        concat_xarrays(Path('path_to_target/Target/'+sinister+'/'+output_dataset + '/'),
+                       allDates, dept, Path('path_to_database/csv'), resolution)
 
     fp = pd.concat(fp).reset_index(drop=True)
     check_and_create_path(Path(f'{output_dataset}'))

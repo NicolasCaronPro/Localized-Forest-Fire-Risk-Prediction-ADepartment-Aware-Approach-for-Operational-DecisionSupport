@@ -1,0 +1,17 @@
+astropy==6.0.0
+gdal==3.8.4
+geocube==0.4.2
+geopandas==1.0.1
+geopy==2.4.1
+hdbscan==0.8.40
+matplotlib==3.10.7
+numpy==2.3.4
+opencv_python==4.12.0.88
+pandas==2.3.3
+plotly==6.3.1
+rasterio==1.4.3
+scikit_learn==1.7.2
+scipy==1.16.3
+Shapely==2.1.2
+skimage==0.0
+xarray==2024.7.0

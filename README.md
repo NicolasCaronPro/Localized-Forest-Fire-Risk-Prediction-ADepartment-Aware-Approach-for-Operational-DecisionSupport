@@ -8,6 +8,38 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 
 #### Database
 This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a data cube (xarray) structured by latitude, longitude, and date using the `concat_xarrays` function in the corresponding folders.
+
+**Expected `path_to_database` layout**
+
+```
+path_to_database/
+├── csv/
+│   ├── france/
+│   │   └── data/
+│   │       ├── BDROUTE/                          # national BDROUTE archives
+│   │       ├── CORINE/                           # land-cover rasters
+│   │       ├── GEE/
+│   │       │   └── <resolution>/                 # Google Earth Engine exports per resolution
+│   │       ├── geo/                              # shared geometries (e.g. hexagones_france.gpkg)
+│   │       └── population/                       # Kontur population dataset
+│   └── departement-XX-name/
+│       ├── data/
+│       │   ├── geo/                              # downloaded administrative boundary (geo.geojson)
+│       │   ├── meteostat/                        # meteostat.csv generated per department
+│       │   ├── spatial/
+│       │   │   ├── hexagones.geojson             # H3 grid clipped to the department
+│       │   │   ├── population/
+│       │   │   ├── elevation/
+│       │   │   └── BDFORET/
+│       │   
+│       └── raster/
+│           ├── 2x2/                                    # default low-resolution rasters (latitude.pkl, datacube.pkl, …)
+            ├── 0.5x0.5/                                 
+            ├── 1x1/                                   
+└── france/
+    └── firepoint/firepoint_to_share.csv                               # national incident CSVs (e.g. firepoint/firepoint.csv)
+```
+
 To compute the features
 ```bash
 python3.9 generate_database.py -m True -t True -s True -r 2x2
@@ -16,6 +48,31 @@ python3.9 generate_database.py -m True -t True -s True -r 2x2
 To compute the target for fire occurrence
 ```bash
 python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occurrence -od bdiff
+python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se burned_area -od bdiff
+```
+
+**Created `path_to_target` layout**
+
+```
+path_to_target/
+├── <firepoint>/                               # e.g. firepoint, vigicrues…
+│   └── <output_dataset>/                     # dataset selected with -d / -od flags (e.g. bdiff)
+│       ├── regions.geojson                    # merged departmental geometries
+│       └── <sinister_encoding>/               # target type from -se flag (occurrence, burned_area…)
+│           ├── bin/
+│           │   ├── 2x2/                      # resolution folders containing <dept>binScale0.pkl
+│           │   └── <other resolutions>/
+│           ├── mask/
+│           │   ├── geo/
+│           │   │   └── 2x2/
+│           │   └── tif/
+│           │       └── 2x2/
+│           ├── raster/
+│           │   └── 2x2/
+│           └── datacube/
+│               └── departement-XX-name/
+│                   └── 2x2/
+│                       └── datacube.pkl # Datacube with firepoints and features
 ```
 
 **Contents**
@@ -36,11 +93,11 @@ python3.9 high_scale_database.py -r False -s firepoint -re 2x2 -d bdiff -se occu
 | Meteorological | OK   |
 | Landsat       | Need GEE account (https://earthengine.google.com/) |
 | Landcover      | Need Corine Account  (https://land.copernicus.eu/en/products/corine-land-cover) |
-| Elevation      | In progress    |
+| Elevation      | OK (use files in drive)    |
 | Population     | OK            |
 | Forest cover   | OK |
 | Calendar      | OK              |
-| BDroute      | OK              |
+| BDroute      | In progress              |
 | Fire point      | See Additionnal Files              |
 
 
@@ -81,7 +138,7 @@ Contains the figures, tables and the full list of variables used to train the mo
 You may find additionnal files on google drive https://drive.google.com/drive/folders/1iCM5ew1F8cmmgkd42jWUQ6A9rZgTZ6cT?usp=sharing, notably
 * `hexagones_france.gpkg` geofile containing all hexagones
 * `firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
-* `elevation.geojson` Level curve for each department
+* `elevation.csv` Level curve for each department
 
 Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
 
