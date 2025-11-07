@@ -106,13 +106,14 @@ path_to_target/
 This folder gathers utilities to encode categorical features and cluster time series.
 These scripts rely on the pickle files generated during the dataset creation phase.
 
-* `encoding.py` – prepares and encodes the variables and saves the results as pickle files. Modify `path_to_raster` to your own architecture
+* `encoding.py` – prepares and encodes the variables and saves the results as pickle files. Modify `path_to_raster` to your own architecture. You can use either `encode` with the pickle files or `encode_from_xarray` with the datacubes.
 * `time_series_clustering.py` – groups time series using the encoded data. Modify `path_to_target` to your own architecture
 * `main.py` - launcg encoding and clustering.
 * `requirements.txt` – Python dependencies required to run the scripts.
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We used data between 2017-06-12 and 2024-12-31.
+  * Or use the file availble on Drive
   * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
   * `tools_functions.py` – utility functions used in the probabilistic pipeline.
   * `dico_departements.py` – departments lookup for target generation.
@@ -139,6 +140,7 @@ You may find additionnal files on google drive https://drive.google.com/drive/fo
 * `hexagones_france.gpkg` geofile containing all hexagones
 * `firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
 * `elevation.csv` Level curve for each department
+* `departement-13-bouches-du-rhone/raster/2x2/datacube.pkl` and `departement-83-var/raster/2x2/datacube.pkl` the datacubes shared for two departments. 
 
 Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
 
