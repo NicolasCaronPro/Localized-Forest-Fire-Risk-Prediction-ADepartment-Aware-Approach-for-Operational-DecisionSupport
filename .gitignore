@@ -12,6 +12,7 @@ mlartifacts/
 *.so
 
 # File
+*.md5
 *.7z
 *.pyc
 *.shp
