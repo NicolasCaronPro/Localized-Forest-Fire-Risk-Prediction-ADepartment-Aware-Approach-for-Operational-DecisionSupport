@@ -12,6 +12,13 @@ mlartifacts/
 *.so
 
 # File
+*.7z
+*.pyc
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
 *.pkl
 *.csv
 *.geojson
