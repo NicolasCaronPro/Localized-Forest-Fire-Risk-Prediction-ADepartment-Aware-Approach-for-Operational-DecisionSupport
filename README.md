@@ -140,7 +140,7 @@ You may find additionnal files on google drive https://drive.google.com/drive/fo
 * `hexagones_france.gpkg` geofile containing all hexagones
 * `firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
 * `elevation.csv` Level curve for each department
-* `departement-13-bouches-du-rhone/raster/2x2/datacube.pkl` the datacube for the Bouches du rhone departments (one the most damaged by forest fire as a example)
+* `departement-13-bouches-du-rhone/raster/2x2/datacube.pkl` and `departement-84-var/raster/2x2/datacube.pkl` the datacubes shared for two departments. 
 
 Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
 
