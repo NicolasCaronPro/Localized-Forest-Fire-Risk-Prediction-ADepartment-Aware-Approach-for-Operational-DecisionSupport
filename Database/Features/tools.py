@@ -30,7 +30,6 @@ from skimage import img_as_float, transform
 
 random.seed(0)
 
-
 ##################################################################################################
 #                                       Meteostat
 ##################################################################################################
@@ -1036,11 +1035,7 @@ def raster_route(dir_output, tifFile, tifFile_high, reslon, reslat, file_path, g
         except Exception as e:
             print(e)
             continue
-        
-    plt.imshow(res)
-    plt.show()
-    exit(1)
-    
+            
     res[:, np.isnan(tifFile)] = np.nan
     res2[np.isnan(tifFile)] = np.nan
     

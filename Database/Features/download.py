@@ -11,11 +11,11 @@ import os  # filesystem helpers
 import py7zr  # handle 7z archives
 import glob  # find files by pattern
 import zipfile  # handle zip archives
+import json
 from tools import *  # shared utilities across the project
-
+from shapely.geometry import shape
 
 # The automation of downloading each variable is not yet fully implemented. For some variables, it is necessary to manually download the raw data beforehand. The download links are provided.
-
 
 def myround(x):
     """Round coordinates to 3 decimal places."""

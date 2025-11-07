@@ -3,6 +3,7 @@
 from download import *
 import logging
 import argparse
+import sys
 
 ############################### Logger #####################################
 
@@ -100,12 +101,12 @@ class GenerateDatabase():
         
         raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
 
-        file_path = Path('/media/caron/X9 Pro/travaille/Thèse/csv/france/data') / 'BDROUTE' / 'ROUTE500_2-1__SHP_LAMB93_FXX_2018-04-09/ROUTE500/1_DONNEES_LIVRAISON_2021-05-00012/R500_2-1_SHP_LAMB93_FXX-ED181/RESEAU_ROUTIER'
+        file_path = Path('path_to_database/csv/france/data') / 'BDROUTE' / 'ROUTE500_2-1__SHP_LAMB93_FXX_2018-04-09/ROUTE500/1_DONNEES_LIVRAISON_2021-05-00012/R500_2-1_SHP_LAMB93_FXX-ED181/RESEAU_ROUTIER'
         
         raster_route(self.dir_raster, self.h3tif, self.h3tif_high, self.resLon_high, self.resLat_high, file_path, self.h3)
         
         if not (self.spatialParams['dir'] / 'population' / 'population.csv').is_file():
-            download_population(Path('/path_to_database/csv/france/data/population'), self.region, self.spatialParams['dir'] / 'population')
+            download_population(Path('path_to_database/csv/france/data/population'), self.region, self.spatialParams['dir'] / 'population')
         raster_population(self.h3tif, self.h3tif_high, self.dir_raster, self.resLon, self.resLat, self.spatialParams['dir'])
 
         if not (self.spatialParams['dir'] / 'elevation' / 'elevation.csv').is_file():
@@ -240,7 +241,7 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
     if not (dir_data / 'spatial/hexagones.geojson').is_file():
         download_hexagones(Path('path_to_database/csv/france/data/geo'), region, dir_data / 'spatial', departement)
 
-    if not (Path('path_to_database/csv/france/data/BDROUTE') / 'ROUTE500_1-0__SHP_LAMB93_FXX_2000-01-01.7z').is_file():
+    if not (Path('path_to_database/csv/france/data/BDROUTE') / 'ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03.7z').is_file():
         download_bdroute(Path('path_to_database/csv/france/data/BDROUTE'))
 
     h3 = gpd.read_file(dir_data / 'spatial/hexagones.geojson')
@@ -249,10 +250,6 @@ def launch(departement, resolution, compute_meteostat_features, compute_temporal
                     compute_meteostat_features, meteostatParams,
                     compute_temporal_features, outputParams,
                     compute_spatial_features, spatialParams,
-                    compute_air_features, airParams,
-                    compute_trafic_features, bouchonParams,
-                    compute_vigicrues_features, vigicrueParams,
-                    compute_nappes_features, nappesParams,
                     region, h3,
                     dir_raster)
 
@@ -286,7 +283,7 @@ if __name__ == '__main__':
     resolution = args.resolution
 
     start = '2017-06-12'
-    stop = '2024-12-31'
+    stop = '2017-12-31'
     
     ################## Ain ######################
     launch('departement-01-ain', resolution, compute_meteostat_features, compute_temporal_features, compute_spatial_features, compute_air_features, compute_trafic_features, compute_vigicrues_features, compute_nappes_features, start, stop)

@@ -1,9 +1,8 @@
-from probabilistic import *
-warnings.simplefilter(action='ignore', category=FutureWarning)
 import argparse
 import datetime as dt
 from dico_departements import *
 from geopy.distance import geodesic
+from tools_functions import *
 
 def create_larger_scale_image(input, proba, bin):
     probaImageScale = np.full(proba.shape, np.nan)
@@ -73,24 +72,6 @@ def process_department(departements, sinister, n_pixel_y, n_pixel_x, read):
         else:
             # Load previously saved raster from disk
             sat0 = read_object(dept + 'rasterScale0.pkl', dir_output / 'raster' / resolution)
-
-        # Try loading incident data for the department
-        try:
-            if dataset_name == 'firemen':
-                # Select the correct CSV file depending on the sinister type
-                if sinister == 'firepoint':
-                    name = 'NATURELSfire.csv'
-                else:
-                    name = 'inondation.csv'
-                fp = pd.read_csv(root / dept / sinister / name)
-        except:
-            # If loading fails, create a zero image for the whole period
-            print('Return a full zero image')
-            inputDep = np.zeros((*sat0[0].shape, len(creneaux)), dtype=float)
-            inputDep[np.isnan(sat0[0])] = np.nan
-            input.append(inputDep)
-            save_object(inputDep, dept + 'binScale0.pkl', dir_output / 'bin' / resolution)
-            continue
 
         # Load data from national datasets and filter by department
         if dataset_name in ['bdiff']:
@@ -197,8 +178,9 @@ if __name__ == "__main__":
         output_dataset = dataset_name
 
     ###################################### Data loading ###################################
-    root = Path('path_to_database')
+    root = Path('/media/caron/X9 Pro/travaille/Thèse/csv')
     dir_output = Path('path_to_target/'+sinister+'/'+output_dataset + '/' + sinister_encoding)
+    check_and_create_path(dir_output)
 
     departements = [f'departement-{dept}' for dept in departements]
     spa = 3
@@ -217,11 +199,10 @@ if __name__ == "__main__":
     regions = pd.concat(regions).reset_index(drop=True)
     regions['scale0'] = regions.index
     regions.index = regions['hex_id']
-    dico = regions['scale0'].to_dict()file_with_nan_no_corse
+    dico = regions['scale0'].to_dict()
     regions.reset_index(drop=True, inplace=True)
-    check_and_create_path(Path(f'{sinister}/{output_dataset}'))
-    print(regions.departement.unique())
-    regions.to_file(f'{sinister}/{output_dataset}/regions.geojson', driver='GeoJSON')
+
+    regions.to_file(f'path_to_target/{sinister}/{output_dataset}/regions.geojson', driver='GeoJSON')
 
     ################################### Create output directory ###########################
     check_and_create_path(dir_output / 'mask' / 'geo' / resolution)
