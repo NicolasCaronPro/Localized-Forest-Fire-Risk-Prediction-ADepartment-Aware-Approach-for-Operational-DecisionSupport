@@ -144,7 +144,15 @@ You may find additionnal files on google drive https://drive.google.com/drive/fo
 
 Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
 
-> **If you use our code, please cite:**
+### Usage
+* First download the directories from google drive.
+* Generate each datacube (or use the shared datacubes).
+* Generate the target datacube.
+* Create the encodders.
+* Aggregate each feature (and encode features) per date and per departments.
+* Sum the targets per date and per departments.
+
+> **If you use our code or the database, please cite:**
 > 
 > Caron, N., Guyeux, C., Noura, H., & Aynes, B. (2025). *Localized Forest Fire Risk Prediction: A Department-Aware Approach for Operational Decision Support*. arXiv:2506.04254. [https://arxiv.org/abs/2506.04254](https://arxiv.org/abs/2506.04254)
 
