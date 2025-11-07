@@ -16,6 +16,7 @@ mlartifacts/
 *.TXT
 *.json
 *.pyc
+*.xml
 *.md5
 *.7z
 *.pyc
