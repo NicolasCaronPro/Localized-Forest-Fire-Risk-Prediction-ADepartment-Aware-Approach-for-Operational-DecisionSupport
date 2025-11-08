@@ -722,7 +722,6 @@ def raster_foret(tifFile, tifFile_high, dir_output, reslon, reslat, dir_data, de
 
     res[:, np.isnan(tifFile)] = np.nan
     res2[np.isnan(tifFile)] = np.nan
-    res3[:, np.isnan(tifFile)] = np.nan
 
     outputName = 'foret.pkl'
     f = open(dir_output / outputName,"wb")
@@ -777,8 +776,10 @@ def raster_sat_from_france(base, geo, dir_output, dir_france, dates):
 
     return res
 
-def rasterisation(h3, lats, longs, column='cluster', defval = 0, name='default', dir_output='/media/caron/X9 Pro1/corbeille', return_lat_lon=False):
+def rasterisation(h3, lats, longs, column='cluster', defval = 0, name='default', dir_output='corbeille', return_lat_lon=False):
     #h3['cluster'] = h3.index
+    
+    check_and_create_path(Path(dir_output))
 
     h3.to_file(dir_output + '/' + name+'.geojson', driver='GeoJSON')
 
@@ -881,7 +882,7 @@ def load_shp_from_dir(subpath):
 
     for shp_file in shp_files:
         try:
-            gdf = gpd.read_file(shp_file)
+            gdf = gpd.read_file(shp_file, encoding="latin1")
             gdfs.append(gdf)
         except Exception as e:
             print(f"Error while reading {shp_file.name}: {e}")
@@ -1117,11 +1118,9 @@ def load_raster_corine(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
     """Load CORINE rasters into an xarray structure."""
     corine = pickle.load(open(dir_raster / "corine.pkl", "rb"))
     corine_land = pickle.load(open(dir_raster / "corine_landcover.pkl", "rb"))
-    corine_inf = pickle.load(open(dir_raster / "corine_influence.pkl", "rb"))
 
     corine = _expand_static(corine, len(dates))
     corine_land = _expand_static(corine_land, len(dates))
-    corine_inf = _expand_static(corine_inf, len(dates))
     
     bands = [
     'Corine_Other',
@@ -1139,7 +1138,6 @@ def load_raster_corine(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
 
     data_vars = {
         "corine_landcover": (("latitude", "longitude", "date"), corine_land),
-        #"cosia_influence": (("band", "latitude", "longitude", "date"), cosia_influence),
     }
 
     for i, band in enumerate(bands):
@@ -1196,17 +1194,14 @@ def load_raster_foret(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
     """Load forest rasters and broadcast them on the date dimension."""
     foret = pickle.load(open(dir_raster / "foret.pkl", "rb"))
     foret_land = pickle.load(open(dir_raster / "foret_landcover.pkl", "rb"))
-    foret_inf = pickle.load(open(dir_raster / "foret_influence.pkl", "rb"))
 
     foret = _expand_static(foret, len(dates))
     foret_land = _expand_static(foret_land, len(dates))
-    foret_inf = _expand_static(foret_inf, len(dates))
 
     bands = valeurs_foret_attribut.keys()
 
     data_vars = {
         "forest_landcover": (("latitude", "longitude", "date"), foret_land),
-        #"cosia_influence": (("band", "latitude", "longitude", "date"), cosia_influence),
     }
 
     for band in bands:
@@ -1219,19 +1214,14 @@ def load_raster_bdroute(dir_raster: Path, dates: list, lat, lon) -> xr.Dataset:
     """Load forest rasters and broadcast them on the date dimension."""
     route = pickle.load(open(dir_raster / "route.pkl", "rb"))
     route_land = pickle.load(open(dir_raster / "route_landcover.pkl", "rb"))
-    route_inf = pickle.load(open(dir_raster / "route_influence.pkl", "rb"))
 
     route = _expand_static(route, len(dates))
     route_land = _expand_static(route_land, len(dates))
-    route_inf = _expand_static(route_inf, len(dates))
-
-    print(route.shape)
 
     bands = ['NoRoad', 'Road']
 
     data_vars = {
         "route_landcover": (("latitude", "longitude", "date"), route_land),
-        #"cosia_influence": (("band", "latitude", "longitude", "date"), cosia_influence),
     }
 
     for i, band in enumerate(bands):
@@ -1264,11 +1254,10 @@ def concat_xarrays(dir_raster: Path, dates: list) -> xr.Dataset:
 
     loaders = [
         (load_rasterise_meteo),
-        (load_raster_corine),
+        #(load_raster_corine),
         (load_raster_elevation),
         (load_raster_population),
-        (load_raster_sat),
-        (load_raster_argile),
+        #(load_raster_sat),
         (load_raster_foret),
         (load_raster_bdroute),
     ]

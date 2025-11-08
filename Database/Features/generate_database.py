@@ -97,11 +97,15 @@ class GenerateDatabase():
 
         # Add corine and bdroute
         # donwload file here https://land.copernicus.eu/en/products/corine-land-cover/clc2018
-        file_subpath = Path('path_to_database/csv/france/data') / 'CORINE' / '197475/Results/U2006_CLC2018_V2020_20u1/U2006_CLC2000_V2020_20u1/U2006_CLC2018_V2020_20u1.tif'
         
-        raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
+        file_subpath = Path('path_to_database/csv/france/data') / 'CORINE' / '197475/Results/U2006_CLC2018_V2020_20u1/U2006_CLC2000_V2020_20u1/U2006_CLC2018_V2020_20u1.tif'
+        if not (file_subpath).is_file():
+            print('You need to resgister and download the file donwload file here https://land.copernicus.eu/en/products/corine-land-cover/clc2018')
+        
+        else:    
+            raster_corine(self.h3, self.dir_raster, file_subpath, self.h3tif, self.h3tif_high)
 
-        file_path = Path('path_to_database/csv/france/data') / 'BDROUTE' / 'ROUTE500_2-1__SHP_LAMB93_FXX_2018-04-09/ROUTE500/1_DONNEES_LIVRAISON_2021-05-00012/R500_2-1_SHP_LAMB93_FXX-ED181/RESEAU_ROUTIER'
+        file_path = Path('path_to_database/csv/france/data') / 'BDROUTE' / 'ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03/ROUTE500/1_DONNEES_LIVRAISON_2022-01-00175/R500_3-0_SHP_LAMB93_FXX-ED211/RESEAU_ROUTIER'
         
         raster_route(self.dir_raster, self.h3tif, self.h3tif_high, self.resLon_high, self.resLat_high, file_path, self.h3)
         
@@ -162,6 +166,10 @@ class GenerateDatabase():
         self.resLon = n_pixel_x
         self.resLat = n_pixel_y
         self.h3tif, lon, lat = rasterisation(self.clusterSum, n_pixel_y, n_pixel_x, column='cluster', defval=np.nan, name=self.departement+'_low', return_lat_lon=True)
+        self.h3tif = self.h3tif[0]
+        
+        lon = lon.reshape(self.h3tif.shape)
+        lat = lat.reshape(self.h3tif.shape)
         
         logger.info(f'Low scale {self.h3tif.shape}')
         

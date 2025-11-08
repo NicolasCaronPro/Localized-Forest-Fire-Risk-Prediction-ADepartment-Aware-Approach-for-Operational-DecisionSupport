@@ -153,6 +153,9 @@ def download_foret(code_dept: int, dept, dir_output) -> None:
     check_and_create_path(dir_output / 'BDFORET')  # subfolder
     print('DONWLOADING FOREST LANDCOVER')
     url = dico_foret_url[dept]  # dataset url
+    subprocess.run(['wget', url, '-O', f"{dir_output}/{url.split('/')[-1]}"], check=True)
+    unzip_7z(dir_output / url.split('/')[-1], dir_output)
+    
     date_pattern = r'\d{4}-\d{2}-\d{2}'  # search pattern
     match = re.search(date_pattern, url)  # regex match
     if match:
@@ -160,6 +163,7 @@ def download_foret(code_dept: int, dept, dir_output) -> None:
         print("Date found:", date)
     else:
         print("No date found in the URL")
+    
     path = (dir_output / f'BDFORET_2-0__SHP_LAMB93_D0{code_dept}_{date}' / 'BDFORET').as_posix()  # folder path
     files = glob.glob(path+'/**/*.shp', recursive=True)  # list shapefiles
     print(files, path)  # debug
