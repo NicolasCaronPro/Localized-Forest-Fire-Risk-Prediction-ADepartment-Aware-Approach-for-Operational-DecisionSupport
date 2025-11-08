@@ -7,7 +7,7 @@ Read the original paper on https://arxiv.org/abs/2506.04254
 ### Description
 
 #### Database
-This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a data cube (xarray) structured by latitude, longitude, and date using the `concat_xarrays` function in the corresponding folders.
+This folder contains the scripts used to create the input features and targets. Both are, firstly, converted to pickle file by departments to limit the memory usage in the process. To explore all features, you mainly need around 250 gigabytes of storage. Additionally, the data can be converted into a data cube (xarray) structured by latitude, longitude, and date using the `concat_xarrays` function in the corresponding folders. By default `Corine landcover` and `Satellite features` are not computed. Download the file for corine manually and use the notebook for satellite features.
 
 **Expected `path_to_database` layout**
 
