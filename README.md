@@ -157,6 +157,8 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 > 
 > Caron, N., Guyeux, C., Noura, H., & Aynes, B. (2025). *Localized Forest Fire Risk Prediction: A Department-Aware Approach for Operational Decision Support*. arXiv:2506.04254. [https://arxiv.org/abs/2506.04254](https://arxiv.org/abs/2506.04254)
 
-
 ### Python Version
 3.9
+
+### Last code check
+08 November 2025
