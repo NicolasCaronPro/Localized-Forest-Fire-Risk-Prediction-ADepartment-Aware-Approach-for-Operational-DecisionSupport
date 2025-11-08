@@ -149,9 +149,7 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 * First download the directories from google drive.
 * Generate each datacube (or use the shared datacubes).
 * Generate the target datacube.
-* Create the encodders.
-* Aggregate each feature (and encode features) per date and per departments.
-* Sum the targets per date and per departments.
+* Create the encoders.
 
 > **If you use our code or the database, please cite:**
 > 
