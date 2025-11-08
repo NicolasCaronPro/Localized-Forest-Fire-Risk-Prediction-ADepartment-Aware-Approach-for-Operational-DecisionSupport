@@ -83,7 +83,7 @@ path_to_target/
   * `download.py` – helpers to retrieve and convert geographic datasets (population, roads, elevation…).
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
-  * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat from Google Earth Engine, including cloud masking and index computation steps.
+  * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat from Google Earth Engine, including cloud masking and index computation steps. Files will be export on your google drive, download and save TIF files into `france/data/GEE`
   * `requirements.txt` – Python dependencies required to run the scripts.
   * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
  
