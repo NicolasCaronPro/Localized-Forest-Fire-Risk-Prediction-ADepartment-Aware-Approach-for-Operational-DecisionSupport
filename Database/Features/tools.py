@@ -1254,10 +1254,10 @@ def concat_xarrays(dir_raster: Path, dates: list) -> xr.Dataset:
 
     loaders = [
         (load_rasterise_meteo),
-        #(load_raster_corine),
+        #(load_raster_corine), # Decomment for loading corine features into the datacube
         (load_raster_elevation),
         (load_raster_population),
-        #(load_raster_sat),
+        #(load_raster_sat), Decomment for loading satellite features into the datacube
         (load_raster_foret),
         (load_raster_bdroute),
     ]
