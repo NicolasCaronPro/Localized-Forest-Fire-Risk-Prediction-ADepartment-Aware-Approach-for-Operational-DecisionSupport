@@ -137,9 +137,10 @@ Contains the figures, tables and the full list of variables used to train the mo
 ### Additionnal files
 
 You may find additionnal files on google drive https://drive.google.com/drive/folders/1iCM5ew1F8cmmgkd42jWUQ6A9rZgTZ6cT?usp=sharing, notably
-* `hexagones_france.gpkg` geofile containing all hexagones
-* `firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
-* `elevation.csv` Level curve for each department
+* `france/data/geo/hexagones_france.gpkg` geofile containing all hexagones
+* `france/data/population/kontur_population_FR_20231101`
+* `france/firepoint/firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
+* `departement-xx-xxx/data/elevation.csv` Level curve for each department
 * `departement-13-bouches-du-rhone/raster/2x2/datacube.pkl` and `departement-83-var/raster/2x2/datacube.pkl` the datacubes shared for two departments. 
 
 Although this GitHub repository uses the generated data to study wildfire risk prediction, the variables can also be used in other areas of spatial analysis or risk management. It is possible to easily select specific departments for study in order to reduce processing time.
@@ -156,6 +157,8 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 > 
 > Caron, N., Guyeux, C., Noura, H., & Aynes, B. (2025). *Localized Forest Fire Risk Prediction: A Department-Aware Approach for Operational Decision Support*. arXiv:2506.04254. [https://arxiv.org/abs/2506.04254](https://arxiv.org/abs/2506.04254)
 
-
 ### Python Version
 3.9
+
+### Last code check
+08 November 2025
