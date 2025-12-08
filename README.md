@@ -121,7 +121,7 @@ These scripts rely on the pickle files generated during the dataset creation pha
   * `bdiff_plot.png` – example difference plot produced during validation.
   * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
   * `requirements.txt` – Python dependencies required to run the scripts.
-  * In the proposed article, targets have been summed by departments, taking the total number of fires (or burned area) in a day (code in progress)
+  * In the proposed article, targets have been summed by departments, taking the total number of fires (or burned area) in a day
 
 #### Models
 This folder implements the machine learning models and evaluation metrics used in the article.
