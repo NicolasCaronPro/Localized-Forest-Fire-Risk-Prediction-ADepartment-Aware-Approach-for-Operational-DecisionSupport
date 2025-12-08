@@ -72,7 +72,7 @@ path_to_target/
 │           └── datacube/
 │               └── departement-XX-name/
 │                   └── 2x2/
-│                       └── datacube.pkl # Datacube with firepoints and features
+│                       └── datacube.pkl # Datacube with firepoints and features (will contain all <sinister_encoding> loaded
 ```
 
 **Contents**
