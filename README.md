@@ -58,7 +58,7 @@ path_to_target/
 ├── <firepoint>/                               # e.g. firepoint, vigicrues…
 │   └── <output_dataset>/                     # dataset selected with -d / -od flags (e.g. bdiff)
 │       ├── regions.geojson                    # merged departmental geometries
-│       └── <sinister_encoding>/               # target type from -se flag (occurrence, burned_area…)
+│       └── <sinister_encoding>/               # target type from -se flag (occurrence)
 │           ├── bin/
 │           │   ├── 2x2/                      # resolution folders containing <dept>binScale0.pkl
 │           │   └── <other resolutions>/
