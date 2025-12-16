@@ -100,6 +100,7 @@ path_to_target/
 | Calendar      | OK              |
 | BDroute      | OK              |
 | Fire point      | See Additionnal Files              |
+| Swelling--shrinking of clays | Removed to due high inconsistency |
 
 
 #### EncoderAndClustering
@@ -161,3 +162,5 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 
 ### Last code check
 08 November 2025
+
+
