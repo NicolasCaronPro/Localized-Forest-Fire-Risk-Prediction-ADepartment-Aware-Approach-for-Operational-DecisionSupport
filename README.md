@@ -58,7 +58,7 @@ path_to_target/
 ├── <firepoint>/                               # e.g. firepoint, vigicrues…
 │   └── <output_dataset>/                     # dataset selected with -d / -od flags (e.g. bdiff)
 │       ├── regions.geojson                    # merged departmental geometries
-│       └── <sinister_encoding>/               # target type from -se flag (occurrence, burned_area…)
+│       └── <sinister_encoding>/               # target type from -se flag (occurrence)
 │           ├── bin/
 │           │   ├── 2x2/                      # resolution folders containing <dept>binScale0.pkl
 │           │   └── <other resolutions>/
@@ -72,7 +72,7 @@ path_to_target/
 │           └── datacube/
 │               └── departement-XX-name/
 │                   └── 2x2/
-│                       └── datacube.pkl # Datacube with firepoints and features
+│                       └── datacube.pkl # Datacube with firepoints and features (will contain all <sinister_encoding> loaded
 ```
 
 **Contents**
@@ -83,7 +83,7 @@ path_to_target/
   * `download.py` – helpers to retrieve and convert geographic datasets (population, roads, elevation…).
   * `tools.py` – geospatial utilities and fire index calculations.
   * `dico_departements.py` – dictionaries mapping department codes to names and storing specific parameters.
-  * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat from Google Earth Engine, including cloud masking and index computation steps. Files will be export on your google drive, download and save TIF files into `france/data/GEE`
+  * `GEEExportData.ipynb` – notebook demonstrating how to export Landsat from Google Earth Engine, including cloud masking and index computation steps. Files will be export on your google drive, download and save TIF files into `france/data/GEE/2x2`
   * `requirements.txt` – Python dependencies required to run the scripts.
   * The code will generate a pickle file for each feature; files will be located in the `dir_raster` directory.
  
@@ -94,12 +94,13 @@ path_to_target/
 | Meteorological | OK   |
 | Landsat       | Need GEE account (https://earthengine.google.com/) |
 | Landcover      | Need Corine Account  (https://land.copernicus.eu/en/products/corine-land-cover) |
-| Elevation      | OK (use files in drive)    |
+| Elevation      | See Additionnal Files    |
 | Population     | OK            |
 | Forest cover   | OK |
 | Calendar      | OK              |
-| BDroute      | In progress              |
+| BDroute      | OK              |
 | Fire point      | See Additionnal Files              |
+| Swelling--shrinking of clays | Removed to due high inconsistency |
 
 
 #### EncoderAndClustering
@@ -113,15 +114,16 @@ These scripts rely on the pickle files generated during the dataset creation pha
 
 * **Targets**
   * Download the fire file on the BDIFF website : https://bdiff.agriculture.gouv.fr/. Select "Diffuser" then on "Ajouter un critère" select "Localisation" (Departement). We used data between 2017-06-12 and 2024-12-31.
-  * Or use the file availble on Drive
+  * Or use the file availble on Drive (recommended)
   * `high_scale_database.py` – script for generating the high-resolution probabilistic database.
   * `tools_functions.py` – utility functions used in the probabilistic pipeline.
   * `dico_departements.py` – departments lookup for target generation.
   * `check.ipynb` – notebook validating the target creation process.
+  * `local_cities.ipynb` notebook to recover latitude and longitude of each cities.
   * `bdiff_plot.png` – example difference plot produced during validation.
   * `discretization.py` – discretisation and aggregation methods to build the supervised targets.
   * `requirements.txt` – Python dependencies required to run the scripts.
-  * In the proposed article, targets have been summed by departments, taking the total number of fires (or burned area) in a day (code in progress)
+  * In the proposed article, targets have been summed by departments, taking the total number of fires (or burned area) in a day
 
 #### Models
 This folder implements the machine learning models and evaluation metrics used in the article.
@@ -138,7 +140,7 @@ Contains the figures, tables and the full list of variables used to train the mo
 
 You may find additionnal files on google drive https://drive.google.com/drive/folders/1iCM5ew1F8cmmgkd42jWUQ6A9rZgTZ6cT?usp=sharing, notably
 * `france/data/geo/hexagones_france.gpkg` geofile containing all hexagones
-* `france/data/population/kontur_population_FR_20231101`
+* `france/data/population/kontur_population_FR_20231101` France population in 2023
 * `france/firepoint/firepoint_to_share.csv` firepoint and burned area with latitude, longitude and corresponding hexagones between 2017 and 2024
 * `departement-xx-xxx/data/elevation.csv` Level curve for each department
 * `departement-13-bouches-du-rhone/raster/2x2/datacube.pkl` and `departement-83-var/raster/2x2/datacube.pkl` the datacubes shared for two departments. 
@@ -149,9 +151,7 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 * First download the directories from google drive.
 * Generate each datacube (or use the shared datacubes).
 * Generate the target datacube.
-* Create the encodders.
-* Aggregate each feature (and encode features) per date and per departments.
-* Sum the targets per date and per departments.
+* Create the encoders.
 
 > **If you use our code or the database, please cite:**
 > 
@@ -162,3 +162,5 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 
 ### Last code check
 08 November 2025
+
+

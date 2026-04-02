@@ -527,8 +527,6 @@ def encode_from_xarray(trainDates, expe, train_departements, dir_output):
     foret = foret.reshape(-1,1)
     landcover = landcover.reshape(-1,1)
     calendar_array = np.moveaxis(calendar_array, 0, 1)
-    osmnx = osmnx.reshape(-1,1)
-    argile_value = argile_value.reshape(-1,1)
     geo_array = geo_array.reshape(-1,1)
     ids_value = ids_value.reshape(-1,1)
     cluster_value = cluster_value.reshape(-1,1)
@@ -551,16 +549,6 @@ def encode_from_xarray(trainDates, expe, train_departements, dir_output):
         encoder = CatBoostEncoder(cols=np.arange(0, 1))
         encoder.fit(foret, spatialValues)
         save_object(encoder, f'encoder_foret_{expe}.pkl', dir_output)
-
-    if osmnx.shape == spatialValues.shape:
-        encoder = CatBoostEncoder(cols=np.arange(0, 1))
-        encoder.fit(osmnx, spatialValues)
-        save_object(encoder, f'encoder_osmnx_{expe}.pkl', dir_output)
-
-    if argile_value.shape == spatialValues.shape:
-        encoder = CatBoostEncoder(cols=np.arange(0, 1))
-        encoder.fit(argile_value, spatialValues)
-        save_object(encoder, f'encoder_argile_{expe}.pkl', dir_output)
 
     if cluster_value.shape == spatialValues.shape:
         encoder = CatBoostEncoder(cols=np.arange(0, 1))
