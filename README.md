@@ -157,10 +157,25 @@ Although this GitHub repository uses the generated data to study wildfire risk p
 > 
 > Caron, N., Guyeux, C., Noura, H., & Aynes, B. (2025). *Localized Forest Fire Risk Prediction: A Department-Aware Approach for Operational Decision Support*. arXiv:2506.04254. [https://arxiv.org/abs/2506.04254](https://arxiv.org/abs/2506.04254)
 
+### Étude de la fonction de perte
+
+```bibtex
+@misc{caron2026extremevalueforestpredictionstudy,
+      title={Extreme-value forest fire prediction A study of the Loss Function in an Ordinality Scheme}, 
+      author={Nicolas Caron and Christophe Guyeux and Hassan Noura and Benjamin Aynes},
+      year={2026},
+      eprint={2601.03327},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2601.03327}, 
+}
+```
+
+![Comparaison WKLoss WEI PdeGPD](comparaison_wkloss_wei_pdegpd.png)
+
 ### Python Version
 3.9
 
 ### Last code check
 08 November 2025
-
 
